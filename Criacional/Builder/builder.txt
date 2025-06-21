@@ -1,0 +1,42 @@
+usado para criar um objeto complexo, com muitos atributos ou configuração.
+que normalmente precisam ser passados no construtor
+
+configuração para uma requisição
+instanciar um objeto enorme
+
+também pode ser definido com uma classe com certos valores padrões
+e alguns métodos setando as configurações
+
+cria objeto por 'etapas', definindo em cada metodo
+cria um objeto muito complexo, com certa logica em cada etapa
+permite o encadeamento de metodo
+objeto final pode variar de cada uso ou construcao
+
+! alem do proprio objeto a ser construido o builder tambem pode ficar muito complexo
+! classe DIRETOR, ela é opcional e define a ordem de cosntrucao dos objetos
+! usar SOMENTE em cenarios onde uma classe possui MUITA dependencia para ser instanciada
+
+class Exemplo 
+{
+private att1 = 1;
+private att2 = 2;
+private att3 = 3;
+
+public setAtt1(){return this}
+public setAtt2(){return this}
+// ou aplica uma logica em um metodo especifico
+public setAtt3(){return this}
+
+// com um método retornando o objeto esperado já com os atributos definidos
+public build(){
+	return new ObjetoFinal(this.att1, this.att2, this.att3);
+}
+}
+
+new Exemplo()
+.setAtt1()
+.setAtt2()
+.setAtt3()
+.build();
+
+-Posso escolher qual metodo irei chamar e em qual ordem (se nao utilizado o Diretor)
