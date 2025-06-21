@@ -1,0 +1,8 @@
+Uma classe onde tem uma estrutura complexa bem definida podendo ser chamado por meio de uma
+interface única (pode ser um método estático ou uma outra classe)
+
+um método esconde uma enorme complexidade ou com varias pequenas complexidades
+
+ela também pode ser facilmente reutilizada em outras partes do código
+
+*pode ser confundida com uma classe Deus

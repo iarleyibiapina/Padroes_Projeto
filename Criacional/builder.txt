@@ -1,0 +1,30 @@
+usado para criar um objeto complexo, com muitos atributos ou configuração.
+que normalmente precisam ser passados no construtor
+
+configuração para uma requisição
+instanciar um objeto enorme
+
+também pode ser definido com uma classe com certos valores padrões
+e alguns métodos setando as configurações
+
+class Exemplo 
+{
+private att1 = 1;
+private att2 = 2;
+private att3 = 3;
+
+public setAtt1(){return this}
+public setAtt2(){return this}
+public setAtt3(){return this}
+
+// com um método retornando a própria classe já com os atributos definidos
+public build(){
+	return new Exemplo(this.att1, this.att2, this.att3);
+}
+}
+
+new Exemplo()
+.setAtt1()
+.setAtt2()
+.setAtt3()
+.build();

@@ -1,0 +1,13 @@
+Criacional
+
+Retornar apenas uma instancia de um objeto de maneria global no projeto inteiro.
+
+útil para conexões com banco, uma classe de Log...
+-vantagens
+garante uma classe instanciada (economiza recursos)
+acesso global (fácil de usar na aplicação)
+-desvantagens
+difícil de testar, (criar classe mocada)
+pode ter problema de corrida (problemas ao gerenciar com multi-thread)
+
+ 

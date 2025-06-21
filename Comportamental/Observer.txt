@@ -1,0 +1,9 @@
+Padrao que literal observa um comportamento de uma classe
+se um determinado evento acontecer, o observer vai capturar e mudar
+o estado desta classe.
+
+
+objetos se inscrevem em um evento que ao acontecer as classes serão
+notificadas.
+
+usado em mudança de estados, logs, chamadas, 

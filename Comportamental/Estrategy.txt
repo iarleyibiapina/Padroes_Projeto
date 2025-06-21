@@ -1,0 +1,9 @@
+define como um objeto se comporta, definindo outros objetos em sua propriedade
+ onde para uma determinada logica ou açao, eu posso utilizar diferentes estratégias
+  para executar, contendo diferentes logicas
+
+Classe.executar(new estratégiaUm())
+Classe.executar(new estratégiaDois())
+Classe.executar(new estratégiaTres())
+
+as estratégias podem ser modificadas em tempo de execução 

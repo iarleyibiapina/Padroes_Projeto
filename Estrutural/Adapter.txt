@@ -1,0 +1,5 @@
+Padrao onde transforma um objeto par um determinado cenário
+'adapta' de fato o objeto para um contexto
+
+usado em integrações externas, uma lib, uma api. para tratar 
+dados que não é esperado 
