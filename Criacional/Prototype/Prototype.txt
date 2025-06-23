@@ -1,0 +1,33 @@
+Tem como objetivo criar um objeto 'base' onde ele pode instanciar novos objetos
+por meio de uma literal cópia do objeto base.
+
+-O objeto base deve ter um metodo 'clone'
+-Usado em casos de uma classe muito complexa ou 'cara' de ser criada.
+-Ajuda a reduzir grande quantidade de subclasses se for preciso poucas modificacoes
+na classe base.
+-Posso registrar um historico dessa classe, meio que a cada modificacao salvar um estado
+-util em casos onde o codigo nao depende de classes concretas para ser criado novos objetos
+
+O segundo objeto nao tera atributos e metodos do objeto base, mas ao fazer 
+a chamada de algum metodo, por ser uma copia ele tera acesso aos atributos e 
+metodos da classe base.
+
+!Diferenças entre o 'shallow' e 'deep' copy (define uma complexidade)
+    -shadow é quando a classe original nao possui valor e ele busca o valor da classe
+        copiada
+    -deep define de fato o valor na classe copia
+
+! PHP posusi a palavra reservada 'clone'
+    return clone Classe
+    OU
+    o metodo magico
+    __clone()
+        onde podera ser aplicada uma logica mais complexa ao clonar o objeto.
+ 
+! Clonar objetos que possuem referencias a outros Objetos pode se tornar SUPER complexo.
+! Problemas com atributos, que possuem outros objetos
+    onde o objeto referenciado na classe base reflete em todos os outros bojetos copiados
+    resolver com o  deep clone ou com pacotes
+
+    O deep pode ser resolvido aplicando o clone em todas as classes dependente
+    (se estrutura muito complexa ou aninhada isso pode ser um grande problema)
