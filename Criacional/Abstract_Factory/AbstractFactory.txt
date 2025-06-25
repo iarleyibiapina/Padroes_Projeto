@@ -1,0 +1,46 @@
+Fornece uma interface para criar uma familia de objetos relacionados ou dependentes
+sem especificar as classes concretas
+
+define uma familia na vertical
+e as classes concretas na horizontal
+
+a fabrica retorna a criacao dos objetos de uma familia
+_______________| familia A | familia B | familia C
+ObjetoConcretoA|           |           |
+ObjetoConcretoB|           |           |
+ObjetoConcretoC|           |           |
+
+Existe uma fabrica para retornar a familia B com os objetos concretos A, B e C.
+e para as demais familias segue o mesmo.
+
+cada familia tem sua particularidade
+
+Assim é criado uma fabrica abstrata para um contexto 
+    essa fabrica abstrata define os metodos para cada classe concreta implementar
+    compondo a familia por completo, 
+
+    a forma como a familia é criada é definida por outra fabrica especialista
+    onde implementara os metodos da fabrica abstrata de nivel acima.
+
+    assim ela retorna cada objeto
+
+
+FabricaAbstrata (define os metodos e uma fabrica de um contexto)
+    CenarioFabrica (fabrica concreta que ira implementar os metodos)
+        metodoUm:   ClasseUm   (cada metodo retorna sua classe especifica)
+        metodoDois: ClasseDois (cada metodo retorna sua classe especifica)
+        metodoTres: ClasseTres (cada metodo retorna sua classe especifica)
+    ... (a logica se repete para cada fabrica)
+
+    os produtos criados por cada metodo em cada fabrica concreta deve retornar 
+    um objeto que implementa uma interface X no contexto da fabrica.
+
+VeiculoAbstrata
+    FordConcretaFactory
+        montaMotor:     Motor    -> new FordMotor
+        colocaPneu:     Pneu     -> new FordPneu
+        colocaGasolina: Gasolina -> new FordGasolina
+    VolkswagenConcretaFactory
+        montaMotor:     Motor    -> new VolkswagenMotor
+        colocaPneu:     Pneu     -> new VolkswagenPneu
+        colocaGasolina: Gasolina -> new VolkswagenGasolina
