@@ -1,0 +1,24 @@
+-Define uma interface/metodo para criar um objeto, retira o uso do 'new' e delega 
+para um metodo, onde a classe concreta definira qual objeto sera instanciado
+
+    QueijoCriador - cria um queijo (podem ter verios tipos de queijos)
+    PaoCriador - cria um pao (podem ter varios tipos de paes)
+    PresuntoCriador - cria um presunto (podem ter varios tipos de presuntos)
+
+Esse padrao, nao sabemos qual classe criadora ira existir e o que sera criado
+é definido apenas o metodo para criar algum tipo de objeto.
+
+Criador->cria(): retorna o objeto criado 
+    o objeto criado pode ser complexo ou apenas um objeto comum
+    o criador pode mudar dinamicamente
+    subclasses que irao criar o tipo do objeto
+    subclassses podem definir como o objeto sera criado
+
+1. precisa de uma interface comum a todos os produtos (nome dado ao objeto criado)
+2. classes que implementam a interface sao chamadas de ProdutoConcretoX, tendo como sufixo
+    o nome de acordo com a fabrica
+3. Utiliza herança, possivel criar novas factories sem afetar as existentes
+4. Pode usar parametros para definir o tipo de objeto ou dados no produto.
+
+! Pode trazer uma enorme quantidade de subclasses onde para cada ConcreteProduct 
+    sera necessario uma ConcreteCreator
