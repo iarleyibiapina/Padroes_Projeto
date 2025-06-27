@@ -1,0 +1,21 @@
+uma fabrica retorna um objeto já bem estruturado baseado na fabrica que o criou
+
+uma fabrica de X, retorna um objeto X com seus atributos
+uma fabrica de Y, retorna um objeto Y com seus atributos
+
+com ela a responsabilidade de instanciar um objeto é passada para a fabrica
+
+
+FabricaUsuario(){}
+CriadorUsuarioComum   extends FabricaUsuario(){}
+CriadorUsuarioAdmin   extends FabricaUsuario(){}
+CriadorUsuarioExterno extends FabricaUsuario(){}
+
+
+assim basta uma pequena logica onde ao invés de usar vários ifs e News de acord com o papel do usuário
+eu faço apenas:
+
+return usuário = FabricaUsuario.create('comum',dados);
+
+
+toda a complexidade para a criação do objeto é feita na fabrica
