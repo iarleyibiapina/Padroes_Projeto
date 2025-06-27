@@ -1,0 +1,34 @@
+Define uma estrutura em arvore para representar hieararquias ou um um conjunto
+onde partes representam um todo.
+
+Possui composto/composicoes e objetos 
+    trata o composto e objeto como um 
+    composto pode guardar um objeto ou outro composto e assim por diante
+    objetos isolados sao chamados de folhas
+
+O - composto
+Y - Folha
+    O
+    /\
+   Y  O
+      /\
+      Y Y
+
+A estrutura pode ser percorrida por uma funcao recursiva
+Composite pode aninhar elementos e acumular
+
+NO INTERNO - possui filhos
+NO EXTERNO - não possui filhos
+
+Quando um metodo é chamado, ele é delegado para o seu no mais externo
+raiz -> no -> no (acumulando valores dos nos anterior)
+
+
+Usa recursividade
+Usa polimorfismo
+Facil gerar uma hierarquia
+Facil criar objepos complexos por composicao
+
+
+!problema
+    objetos FOLHA, tendem a ter metodos que nao sao utilizados ou nao fazem nada
