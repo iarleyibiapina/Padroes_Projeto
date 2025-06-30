@@ -1,0 +1,15 @@
+Fazer com que duas classes de interfaces incompativeis trabalhem juntas
+-Converter a interface de uma classe em outra interface esperada
+
+O adapter funciona sob meu dominio dentro da aplicacao, adaptando chamadas de dentro
+para frameworks ou lib externas.
+Tambem pode ser usado para adaptar codigo legado.
+
+-Usar para nao depender diretamente de codigos externos (pois se alterar pode 
+haver grande impacto no sistema)
+-Caso seja impratical estendenr um codigo de cada subclasse para apenas adicionar
+    uma funcionalidade desejada curta.
+
+Declara uma interafce 'Adapter' onde todos os 'Adapters' concretos implementam
+deve ter metodos para os codigos que adaptarao 'Adaptee'
+
