@@ -3,13 +3,29 @@ Fazer com que duas classes de interfaces incompativeis trabalhem juntas
 
 O adapter funciona sob meu dominio dentro da aplicacao, adaptando chamadas de dentro
 para frameworks ou lib externas.
-Tambem pode ser usado para adaptar codigo legado.
+Tambem pode ser usado para adaptar codigo legado em codigo atual.
 
 -Usar para nao depender diretamente de codigos externos (pois se alterar pode 
 haver grande impacto no sistema)
--Caso seja impratical estendenr um codigo de cada subclasse para apenas adicionar
+-Caso seja impratical estender um codigo de cada subclasse para apenas adicionar
     uma funcionalidade desejada curta.
 
 Declara uma interafce 'Adapter' onde todos os 'Adapters' concretos implementam
 deve ter metodos para os codigos que adaptarao 'Adaptee'
 
+-Em grande complexidade adapter pode ser utilizado para definir limites entre 
+    camadas do projeto. (externo <-> interno)
+
+Possui estrutura por herança multipla (nem toda linguagem implementa)
+Possui estrutura por composicao
+
+Codigo Cliente -> chama o Adapter que implementa a interface Adaptee
+    cria o seu proprio metodo onde aplica a sua logica e chama 
+    o metodo da interface Adaptee.
+
+    todos os adaptadores vao modificar e chamar o metodo da interface Adaptee
+
+Se eu adicionar mais classes "Adaptadoras" o padrao deixa de ser um 'Adapter' e parte 
+para o 'Strategy'.
+
+Obrigatoriamente precisa pegar classe antiga/alvo para ajustar ao response
