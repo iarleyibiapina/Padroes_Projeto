@@ -1,0 +1,40 @@
+    Estrutura semelhante ao Adapter mas com intenção diferente onde:
+        tem como intenção desacoplar uma abstracao da implementação
+        fazendo que as duas evoluam e variam de forma independente
+
+    Um padrao onde classes possuem dependencia (N para N)
+
+    ! Abstracao é um codigo de alto nivel que geralmente delega ações para outro objeto
+    ? Implementacao é o codigo que executa
+
+    Possivel problema:
+        possuo uma abstracao, com suas distintas implementações
+
+        mas se eu precisar de uma abstracao com poucas alteraçoes ou adicoes.
+        ela ira herdar a abstracao existente e agora todas as antigas implementacoes
+        deverao herdar da nova abstracao.
+
+        isso em grande escala inflige uma enorme mudança no codigo afetando em varias 
+        classes. Pode ocorrer tambem uma duplicacao de implementacao que abrange 
+
+        A cada nova abstracao com pequenas mudanças toda a estrutura existente iria 
+        duplicar exponencialmente
+
+    A solução: 
+        criar duas abstracoes, uma que representa a 'abstracao' e outra que representa
+        a 'implementacao'
+
+        A AbstracaoAbstracao teria um atributo que referencia sua implementacao
+        A ImplementacaoAbstracao teria os seus metodos especificos.
+
+    A 'ponte' é realizada por meio do atributo que possui uma referencia para a outra abstracao
+        que ira implementar o cenario.
+        ObjetoA que extende da AbtracaoA
+        depende do ObjetoB que extende da AbstracaoB (verdadeira implementacao)
+
+    ! Adapter X Bridge
+        adapter faz funcionar APOS as coisas terem sido projetadas
+        bridge faz funcionar ANTES QUE as coisas existam
+
+    Bridge tambem pode ser util para uma classe que pode ter diversas variantes
+        *troca as implementacoes em tempo de execucao (foco em objetos)
