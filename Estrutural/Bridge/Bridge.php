@@ -1,139 +1,121 @@
 <?php
-// futuro Cliente
 
-//================Estrutura basica
-// Abstracoes
-abstract class ContextoUmAbstracao
+// Resumidamente, preciso dessa estrutura:
+// Preciso da interface da abstracao
+    // implementacao da abstracao
+
+// Classes que possuem atributo da abstracao
+    // Classe refinada de 'Classe'
+
+//======================================================
+// Implentações:
+interface MaterialImplementacao
 {
-    public ImplementacaoAbstracao $implementacao;
-
-    abstract public function setImplementation(ImplementacaoAbstracao $implementacao): void;
-
-    // interagindo com a implementacao
-    public function toggleStatus()
-    {
-        $this->implementacao->status = !$this->implementacao->status;
-    }
+    public function getAtt1(): string;
+    public function getAtt2(): bool;
+    public function toggleAtt2(): void;
 }
-abstract class ContextoDoisAbstracao
+
+class Tijolo implements MaterialImplementacao
 {
-    public ImplementacaoAbstracaoRefinada $implementacao;
-
-    abstract public function setImplementation(ImplementacaoAbstracaoRefinada $implementacao): void;
-
-    // interagindo com a implementacao ou seu metodo especifico
-    public function especificoAbstracao(): string
+    protected string $Att1 = "tijolo";
+    protected bool $Att2 = false;
+    
+    public function getAtt1(): string
+    {   
+        return $this->Att1;
+    }
+    public function getAtt2(): bool
+    {   
+        return $this->Att2;
+    }
+    public function toggleAtt2(): void
     {
-        return "metodo especifico da abstrata";
+        $this->Att2 = !$this->Att2;
     }
 }
-class ImplementaConcretaAbstracao extends ContextoUmAbstracao
+
+class Linha implements MaterialImplementacao
 {
-    public function __construct(public ImplementacaoAbstracao $implementacao) {
+    protected string $Att1 = "linha";
+    public bool $Att2 = true;
+    
+    public function getAtt1(): string
+    {   
+        return $this->Att1;
     }
-    public function setImplementation(ImplementacaoAbstracao $implementacao): void
+    public function getAtt2(): bool
+    {   
+        return $this->Att2;
+    }
+    public function toggleAtt2(): void
     {
-        $this->implementacao = $implementacao; 
+        $this->Att2 = !$this->Att2;
     }
 }
-class ImplementaConcretaAbstracaoRefinada extends ContextoDoisAbstracao
+
+
+//======================================================
+// Abstracoes:
+    // possui ligacao com implementacao
+class Campo 
 {
-    public function __construct(public ImplementacaoAbstracaoRefinada $implementacao) {
+    public function __construct(protected readonly MaterialImplementacao $material) { 
     }
-    public function setImplementation(ImplementacaoAbstracaoRefinada $implementacao): void
+    public function material(): MaterialImplementacao
     {
-        $this->implementacao = $implementacao;
+        return $this->material;
+    }
+
+    public function funcaoCampo()
+    {
+        return "funcao do campo";
     }
 }
-// Implementacoes
-abstract class ImplementacaoAbstracao 
+
+class InteriorRefinado extends Campo
 {
-    // atributo que a abstracao ira modificar
-    public bool $status = false;
-    // atributos especificos
-    abstract public function setStatus(bool $value);
-    abstract public function status(): bool;
-}
-
-abstract class ImplementacaoAbstracaoRefinada extends ImplementacaoAbstracao
-{ // implementacao mais refinada
-    // atributos especificos
-    public string $botao = "botao"; // novo
-    abstract public function metodoEspecifico(): mixed; // novo
-}
-//================
-
-//================Varias implementacoes especificas
-class SituacaoCorredorSimples extends ImplementacaoAbstracao
-{
-    public function setStatus(bool $value)
+    public function funcaoInterior()
     {
-        $this->status = $value; // pode haver uma logica especifica aqui tambem
-    }
-
-    public function status(): bool
-    {
-        return $this->status; // pode haver uma logica especifica aqui tambem
-    }
-
-    // outros metodos/atributos especificos desta classe
-    public function especificoSituacao(): string
-    {
-        return "metodo extra do corredor simples";
+        return $this->funcaoCampo() . " refinado interior";
     }
 }
-class SituacaoCorredorAvancada extends ImplementacaoAbstracaoRefinada
-{
-    public function setStatus(bool $value)
-    {
-        $this->status = $value;
-    }
 
-    public function status(): bool
-    {
-        return $this->status; 
-    }
-    public function metodoEspecifico(): mixed
-    {
-        return "metodo especifico de corredor avancado";
-    }
-}
-// ...posso ter uma familia de objetos que implementam essa abstracao
-// ...com a nova implementacao eu posso alternar em meu objeto qual 
-//      implementacao ele ira extender, se adicionar metodos eu modifico
-//      se diminuir metodos apenas deixo o codigo com esta
-class SituacaoQuartoSimples extends ImplementacaoAbstracaoRefinada
-{
-    public function setStatus(bool $value)
-    {
-        $this->status = $value; // pode haver uma logica especifica aqui tambem
-    }
+//=====================================================
 
-    public function status(): bool
-    {
-        return $this->status; // pode haver uma logica especifica aqui tambem
-    }
-    public function metodoEspecifico(): mixed
-    {
-        return "metodo especifico do quarto simples";
-    }
-}
-//================Criacao das classes abstratas 
+// Cliente
 
-$abstracao = new ImplementaConcretaAbstracao(new SituacaoCorredorSimples()); # primeira abstracao com primeira implementacao
-// $abstracao->setImplementation(new SituacaoCorredorAvancada());  # primeira abstracao com segunda implementacao
-$conjunto1 = [
-    $abstracao->implementacao->status,                # se corredor simples
-    // $abstracao->implementacao->metodoEspecifico(), # se corredor avancado
+$campoComTijolo = new Campo(new Tijolo());
+$campoComLinha  = new Campo(new Linha());
+// 
+$interiorComTijolo = new InteriorRefinado(new Tijolo());
+$interiorComLinha = new InteriorRefinado(new Linha());
+
+$r1 = [
+    $campoComTijolo->material()->getAtt1(),
+    $campoComTijolo->material()->toggleAtt2(),
+    $campoComTijolo->material()->getAtt2(),
+    $campoComTijolo->funcaoCampo()
 ];
-// die(var_dump($conjunto1));
+$r2 = [
+    $campoComLinha->material()->getAtt1(),
+    $campoComLinha->material()->toggleAtt2(),
+    $campoComLinha->material()->getAtt2(),
+    $campoComLinha->funcaoCampo()
+];
+$r3 = [
+    $interiorComTijolo->material()->getAtt1(),
+    $interiorComTijolo->material()->toggleAtt2(),
+    $interiorComTijolo->material()->getAtt2(),
+    $interiorComTijolo->funcaoCampo(),
+    $interiorComTijolo->funcaoInterior() // extra da implementacao
+];
+$r4 = [
+    $interiorComLinha->material()->getAtt1(),
+    $interiorComLinha->material()->toggleAtt2(),
+    $interiorComLinha->material()->getAtt2(),
+    $interiorComLinha->funcaoCampo(),
+    $interiorComLinha->funcaoInterior() // extra da implementacao
+];
 
-$abstracao = new ImplementaConcretaAbstracaoRefinada(new SituacaoQuartoSimples()); # segunda abstracao com primeira implementacao
-$conjunto2 = [
-    $abstracao->implementacao->status(), 
-    $abstracao->implementacao->metodoEspecifico(),
-    $abstracao->especificoAbstracao()
-]; # segunda abstracao com segunda implementacao
-
-die(var_dump($conjunto2));
-//==================Logo posso ter quantidade variadas de Abstracoes x Implementacoes
+die(var_dump($r3, $r4));
