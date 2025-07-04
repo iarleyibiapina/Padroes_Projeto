@@ -1,0 +1,45 @@
+Agrega (decorator depende de uma classe, essa classe adiciona) responsabilidades a um objeto dinamicamente
+    em tempo de execucao. 
+Alternativa a herança
+Extende funcionalidades
+*pode se assemelhar ao Composite, pois usa composicao ao inves de herançak
+pode manipular dados (no decorador)antes do retorno
+
+Existe a classe 'Produto' e as classes 'Decoracoes'
+
+    *decorator tambem compartilha da mesma interface de produto, um espellho de produto
+
+possuo uma interaface 'Decorator', que vai ser utilizada pelos decoradores concretos
+a classe Decorator é um componente e possui um component, pode fazer chamadas do produto filho
+    possuindo os mesmos metodos
+
+    Decorator
+    #component
+    +any()
+        ConcreteDecorator 
+        +any()
+
+Decoradores concretos podem adicionar funcionalidades ao componente
+Decorador precisa repassar chamadas de metodos para o componente concreto e servir de interface para decorators
+
+util em cenarios com: (provavel explosiao de subclasses, usar composicao ao inves de herança, adicionar funcionalidades
+    em objetos sem alterar o codigo existente)
+possivel adicionar mais de um decorador a um objeto
+
+Objeto Original -> decorador(objeto) - ele pega o objeto, possui acesso ao objeto original em X estado por meio 
+    da interface definida, modifica o estado do objeto diretamente
+
+    *assim o objeto possui um novo estado apos o decorador
+    X (estado 1)
+    Decorador(X)
+    X (estado 2)
+
+    é assim que funciona tambem o cascateamento de modificacoes de um objeto
+
+    X (estado 1)
+    Decorador1(X) (modifica estado 1 para 2)
+    Decorador2(X) (modifica estado 2 para 3)
+    Decorador3(X) (modifica estado 3 para 4)
+    X (estado 4) por fim o objeto pode ser acessado diretamente neste estado final
+
+O metodos de cada decorador sao chamados de maneira recursiva até a sua base.
