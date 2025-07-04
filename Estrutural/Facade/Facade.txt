@@ -1,0 +1,25 @@
+Uma classe onde tem uma estrutura complexa bem definida podendo ser chamado por meio de uma
+interface única (pode ser um método estático ou uma outra classe)
+
+um método esconde uma enorme complexidade ou com varias pequenas complexidades
+
+ela também pode ser facilmente reutilizada em outras partes do código
+
+*pode ser confundida com uma classe Deus, Class faz tudo.
+==
+Fornece uma interface unificada para um conjunto de interfaces em um subsistema, 
+tornando o subsistema mais facil de ser usado.
+== 
+
+Com a Facade toda a complexidade, classes, dependencias e varias chamadas de metodos 
+de um contexto especifico são resumidas e de facil acesso;
+*facade não OCULTA o codigo, ela facilita. O codigo ainda é acessivel de maneira 
+    isolada e externa.
+
+== 
+Diferente de um builder, factory...
+
+A facade reuni varias classes e divergentes logicas, retorando qualquer tipo de valor
+ou executando qualquer outro tipo de acao definido pela facade.
+
+*É possivel uma FACADE usar outra FACADE
