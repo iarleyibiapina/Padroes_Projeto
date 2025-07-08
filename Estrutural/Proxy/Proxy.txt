@@ -1,0 +1,41 @@
+Proxy 
+
+*Similar ao composite, decorator. !Mas intenção diferente
+
+Fornece um substituto ou marcador de localização para outro objeto
+para controlar o acesso a esse objeto.
+
+Ele finge ser um objeto real para controle de acesso (similar ao Proxy de rede)
+Recebe solicitacoes que seriam enviadas ao objeto real e tera controle sobre como
+e quando encaminha-las (ou nao) para o objeto real.
+
+[cliente -> proxy -> objeto real]
+
+Proxy pode:
+-fazer cache de chamadas para objetos caros para o sistema
+-criar logs de acesso, avisos ou erros
+-controle de acesso (autenticação)
+-distribuir serviços
+-adiar instanciaçoes (lazy instantiation) ou execuçoes (lazy evaluation)
+-ou outro controle mais especifico de cada caso
+
+! serviço remotos, nesse contexto são outros subsistemas dentro do servidor,
+    um banco de dados seria um serviço remoto, um outro projeto é um serviço remoto
+
+Há classificações de proxy como:
+    Virtual: Controle de acesso a recursos caros para criacao ou utilizacao
+    Remoto: Controle de acesso a recursos que estao em servidores remotos
+    Proteção: Controle de acesso a recursos que necessitam de autenticaçao ou permissao
+    Inteligente: Controlar acesso ao objeto real, executa controle sobre quando e como executar
+        determinadas açoes
+
+Trecho do livro:
+(GoF PT-BR pág. 209) ...Diferentemente do Decorator, o padrão Proxy não está preocupado em incluir
+ou excluir comportamentos dinamicamente e não está projetado para composição recursiva. Sua intenção 
+é fornecer um substituto para um objeto quando for inconveniente ou indesejável acessá-lo diretamente 
+porque, por exemplo, está numa máquina remota, tem acesso restrito ou é persistente.
+
+! Este padrao da total liberdade de uso e logica antes de acessar a classe real
+! Em alguns cenarios ao cachear dados com proxy, o objeto real pode ficar temporariamente
+    indisponivel que ainda funcionara normalmente.
+! O proxy pode controlar ciclos de vida dos objetos reais
