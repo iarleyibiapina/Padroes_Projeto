@@ -1,0 +1,28 @@
+Padrao Estrutural
+
+Tem como intençao compartilhar recursos de maneira eficiente para grandes 
+quantidades de objetos. (otimização)
+
+Define o estado do objeto em dois: INTRISECO e EXTRINSECO
+
+    INTRISECO.: O estado de um objeto nunca, ou poucas vezes, muda de estado dentro do sistema. 
+        (podem ser tambem dados que se repetem muitas vezes para um X contexto)
+    EXTRINSECO.: O estado de um objeto sempre varia
+
+De modo passo a passo:
+    -separar os estados de um objeto
+    -manter o estado intriseco de maneira imutavel (geralmente pelo construtor)
+    -receber os dados extrinsecos por meio de metodos
+    -verificar se o objeto ja existe para retornar ele ou buscar
+
+! Isso traz uma grande complexidade tambem, analisar bastante o contexto.
+
+Na hora de unir os dados para serem utilizados, geralmente é lidado pelo lado do 
+codigo cliente
+
+Recomendado usar somente quando TODAS as condições forem satisfeitas.:
+-Aplicação utiliza uma enorme quantidade de objetos
+-Custo para armazenamento é alto por conta da quantidade de objeto
+-Maioria dos estados dos objetos podem ser extrinsecos
+-Aplicação nao depende da identidade de um objeto.
+
