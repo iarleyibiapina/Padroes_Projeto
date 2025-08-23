@@ -1,3 +1,7 @@
+Definir uma familia de algoritmo, encapsular. (define as estrategias)
+Faze-lôs intercambiaveis em um objeto central (troca de estrategia)
+Independente do cliente (objeto central)
+/
 define como um objeto se comporta, definindo outros objetos em sua propriedade
  onde para uma determinada logica ou açao, eu posso utilizar diferentes estratégias
   para executar, contendo diferentes logicas
@@ -7,3 +11,4 @@ Classe.executar(new estratégiaDois())
 Classe.executar(new estratégiaTres())
 
 as estratégias podem ser modificadas em tempo de execução 
+
