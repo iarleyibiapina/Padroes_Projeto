@@ -33,3 +33,7 @@ echo $ReceptorLampada->volume;
 echo "\n";
 
 
+// Possivel alterar o controle para receber um array de comando, segmentado por 
+// uma chave que referencia o comando, assim eu posso chamar o metodo executar e 
+// passar a chave pelo parametro executando o comando definido.
+// ? ps: criar metodo 'adicionarComando' para adicionar a esta lista
