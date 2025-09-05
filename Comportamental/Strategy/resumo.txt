@@ -1,0 +1,170 @@
+https://refactoring.guru/design-patterns/strategy
+
+Problematica:
+
+    Um app de mapas possuia uma feature de traçar uma rota.
+    a medida que o tempo passava surgia features para determinados tipos de usuarios
+    pedestres, rotas para carros, bicicletas, transporte publico...
+    mas acontece que a cada feature adicionada o codigo principal duplicava de tamanho
+    ficando cada vez mais dificil de implementar novas ideias e dar manutenção.
+    qualquer alteração simples poderia afetar a classe inteira.
+    alem do fato de que qualquer adição necessitaria alterar a classe.
+    Problemas na equipe surgem pois ha muitos conflitos de merge alem do fato de ser 
+    complicado de entender o codigo.
+
+Solução: 
+
+    Strategy sugere que uma classe deve fazer uma coisa em especifico mas de varias 
+    maneiras diferentes, essas maneiras devem ser extraidas em classes separadas
+    chamadas de 'Estrategias'.
+
+    A classe original chamada de 'Contexto' deve ter um campo que armazena uma referencia
+    a uma das estrategias, assim o trabalho deve ficar para a estrategia ligada ao inves
+    de a propria clsse executar.
+
+    A estrategia deve ser passada como parametro de acordo com o contexto e o contexto
+    nao conhece as estrategias (pois podem haver varias). Todas estrategias implementa
+    uma interface generica que expoe um metodo onde o contexto executa um algoritmo de 
+    uma estrategia.
+
+    Desta forma o contexto se torna independente de estrategias concretas, entao é possivel
+    adiciona novos algoritimos ou modificar aqueles existentes sem mudar o codido do contexto
+    ou outras estrategias.
+
+    <<interface>>
+    RouteStrategy
+    + buildRoute()
+
+    Road    implements RouteStrategy
+    Public  implements RouteStrategy
+    Walking implements RouteStrategy
+
+    Navigator
+    + buildRoute(RouteStrategy $route) // pode ser passado uma estrategia [Road, Public, Walking]
+    {
+        return $route->buildRoute();
+    }
+
+    voltando a problematica, cada nova feature de rota pode ser extraida em uma classe (estrategia)
+    isolada onde a classe principal apenas executa o metodo de construir rota passando a estrategia
+    necessaria. Assim como a troca de estrategias pode ser feita, a classe principal nao deve se 
+    importar em como executar, apenas chamar o metodo.
+
+Real World Analogy
+
+    Pegar um transporte para um determinado local, carro, onibus ou bicicletas que são as estrategias
+    disponiveis que dependem do tempo e dinheiro, entao de acordo com estas duas variaveis uma estra-
+    -tegia certa pode ser adotada.
+
+Estrutura
+
+    1. 
+        Contexto
+        - strategy
+        + setStrategy(strategy)
+        + doSomething(){
+            this.strategy.execute()
+        }
+    2.
+        <<interface>>
+        Strategy
+        + execute(data)
+    3.
+        ConcreteStrategies
+        + execute(data) {
+            // some way different of execute
+        }
+    4.
+        ClientDetermineAnStrategy
+    5.
+        // executing the strategies
+        str = new SomeStrategy()
+        context.setStrategy(str)
+        context.doSomething()
+        //
+        other = new OtherStrategy()
+        context.setStrategy(other)
+        context.doSomething()
+
+1. classe mantem referencia a uma estrategia concreta e comunica com este objeto
+apenas via interface da estrategia.
+2. interface de estrategias é comum para todas as estrategias concretas, ela declara
+um metodo que o contexto ira executar de uma estrategia.
+3. estrategias concretas implementam diferentes variações que um agloritmo pode usar
+4. o contexto chama o metodo de execuçao ligado ao objeto estrategia cada vez que o 
+algoritmo rodar, o contexto nao conhece o tipo de estragia que vai funcionar ou como
+o algoritmo é executado.
+5. O cliente cria um objeto de estrategia especifico e passa ao contexto, o contexto
+expoe uma definição (setter) na qual deixa o cliente recolocar a estrategia associada
+ao contexto em um determinado tempo de execução.
+
+Aplicabilidade
+
+    - usar quando tiver diferentes variaçoes de um algoritmo em um objeto e for necessario
+    mudar este algoritmo. (Altera de forma indireta o comportamento do objeto em tempo
+    de execuçao, associado sub-objetos que podem executar sub-tarefas de diferentes formas)
+    - quando tiver varias classes similares modificando apenas a forma de executar algum
+    comportamento (extrair o comportamento variavel para um conjnto de classes separada)
+    - Isolar certas regras de negocio, dados internos, dependencias.
+    - Quando classe tiver uma condicional massiva e que altera variantes do mesmo codigo
+
+Identificando 
+
+    - Encontrar algoritimos que possam mudar (ou mudam) frequentemente, uma condicional
+    grande que executa alguma variação de codigo.
+    - Declarar uma interface comum de todas variantes
+    - um por um, extrair algorimtos para suas proprias classes implementando a interface comum
+    - classe contexto, adicionar um atributo para armazenar a referencia a estrategia
+    onde é possivel redefinir a estrategia, o contexto deve usar a estrategia apenas 
+    pelo meio da interface, o contexto deve definir uma interface na qual deixa a estrategia
+    acessar os dados
+    - cliente de um contexto deve associar uma estrategia correta para que execute um processo
+    como esperado
+    - Um objeto aninhado, onde executa uma ação separada, outros obejtos são utilizados como 
+    'setters'
+
+    *Strategy possui uma alternativa muito forte que são as funçoes anonimas.
+
+Pros e contras
+
+    - Pros: 
+    isolar detalhes de implementações
+    recolocar herança com composicao
+    respeita principio do aberto/fechado, onde novas estrategias nao alteram o contexto
+    trocar de algoritimos usado dentro de um objeto em tempo de execução
+
+    - Contras:
+    se certos algoritimos raramente mudam não é necessario usar estrategia.
+    as estrategias devem possuir diferenças claras e objetivas para serem dividas
+    programação moderna permite que funçoes anonimas executem certos algoritmos
+    entao estas funçoes podem ser utilizado sob o conceito de estrategia mas sem o uso
+    desnecessario de criar classes e interfaces.
+
+Outros padroes
+
+-Bridge, State, Strategy (especificos casos de Adapter) possuem estruturas e conceitos 
+    semelhantes, ondem delegam funçoes para outros objetos, mas cada uma possui seu objeto
+    e resolve um especifico problemas, alem de ajudar outros devs a entender qual problema
+    o software possui.
+
+-Command e Strategy parecem similares por que usam parametrização de um objeto com uma ação
+    mas eles possuem diferentes intençoes:
+    - command converte qualquer operação em um objeto, o parametro da operação se torna
+    os campos de um objeto, a conversao permite voce diferir a execuçao da operaçao.
+    - Strategy usualmente descreve diferentes formas de fazer a mesma coisa deixando trocar
+    o algoritmo com uma unica classe contexto.
+
+-Decorator permite mudar a 'pele' de um objeto, enquanto o Strategy muda o interior
+
+-Template Method é baseado em herança, ele deixa voce alterar partes de um algorimto
+    extendendo estas partes em sub-classes, estrategias são baseadas em composicao: voce
+    muda partes de um comportamento de um objeto com diferentes estrategias que correspondem
+    a aquele comportamento. 
+    Template Method funciona a nivel de classe, estatico. 
+    Strategy funciona a nivel de objeto, permitindo trocar o comportamento do objeto em execuçao.
+
+-State pode ser considerado uma extensao de estrategy, os dois sao baseado em composicao,
+    trocam de comportamento do contexto delegando o trabalho para objetos 'helpers', Strategy faz
+    cada objeto ser completamente independente e isolada de cada estretegia, Stato não restringe
+    dependencias entre estados concretos deixando eles alterar o estado do contexto livremente.
+

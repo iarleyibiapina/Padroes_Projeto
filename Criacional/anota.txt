@@ -1,0 +1,152 @@
+***Coloca em pratica na pasta /PROJETO
+
+cap-1 - flyweight segunda parte
+
+    flyweight factory, cria objetos que implementa o flyweight
+    e assim é implementado o cache.
+
+    Criador de pedido (factory do flyweight)
+    vai possuir um metodo para criar os dados extrinsicos e retornar
+    o pedido.
+
+    O proposito é separar a implementação, instanciar a classe flyweight
+    e armazenar na classe, "cache". 
+
+    Toda chamada do metodo verifica se a variavel ja possui a instanciar
+    senão ela cria uma instancia.
+
+cap-2 - factory method
+
+    cenario: implementando log de açoes e para isto, sera criado um
+    gerador de Log.
+
+    é criado uma interface e duas classes que implementam ela
+    usando stout e file log.
+
+    entao é preciso de um gerenciador de log para formatar a mensagem
+    e instanciar o log certo.
+
+    Em logoWriter se precisar usar o file ou qualquer outro logger, 
+    eu precisaria mudar toda a estrutura ou dividir em subclasses. 
+    Mas isto poderia crescer infinitamente.
+
+    Para isso existe a fabrica de loggers, onde eu posso gerar diferentes
+    loggers de maneira diferente.
+    
+    Agora na pasta factory, possuo duas implementaçoes de log, posso alternar
+    facilmente e cada uma retorna um novo objeto. (cria um novo objeto).
+
+    Consigo facilmente trocar entre implementaçoes, mudar na logica de cada uma
+    se interferir em outras partes.
+
+    -proximo parte, adicionar imposto junto.
+
+cap-3 - abstract factory
+
+    tem como objetivo criar objetos relacionados, ou uma familia de objetos
+    sem especificar suas classes concretas
+    no contexto do projeto: 
+        VendaProduto possui Icms
+        VendaServico possui Iss 
+
+        são quatro objetos diferentes, mas dois deles estao relacionados.
+    abstract trata de criar um objeto principal e seus objetos relacionados
+
+    criado factory de produto e servico, que cria um produto e seu imposto relacionado
+    
+
+cap-4 - builder
+
+    Gerador, Construtor, trabalhador de um objeto.
+    Cenario: sistema precisa gerar uma nota fiscal
+
+    Esta classe possui muitos atributos sendo inicializados via construtor
+    ainda tem o fato de que se algum atributo nao for necessario, tera
+    de ser passado um 'null'. tornando a criaçao da classe enorme, e se
+    for preciso reutilizar a classe entao? todos os dados serao necessario.
+
+    para isto é criado uma ideia de Builder, onde vai construir a classe e 
+    descentralizar a complexidade do construtor e outras regras.
+    este builder vai fazer um passo a passo do que é necessario para criar 
+    uma nota fiscal
+
+    processo de criaçao de nota fiscal antes;
+    $empresa = new Empresa(
+        '12.345.678/0001-90', // CNPJ
+        'Razão Social Exemplo Ltda', // Razão Social
+        ['item1', 'item2'], // Itens
+        'Observações sobre a empresa.', // Observações
+        new DateTime('2024-10-10'), // Data de Emissão
+        1500.75 // Valor dos Impostos
+    );
+
+    processo de criação de nota fiscal depois:
+    $builder = new NotaFiscalBuilder();
+    $builder->paraEmpresa('x','y');
+    $builder->comItemOrcamento(new ItemOrcamento());
+    $builder->comItemOrcamento(new ItemOrcamento());
+    $builder->comItemOrcamento(new ItemOrcamento());
+    $builder->comItemAleatorio("frase");
+    $builder->comObservacoes('z');
+    $notaFiscal = $builder->constroi();
+    
+    tambem posso retornar a instancia do proprio metodo
+    e encadear funcoes (fluent interface)
+    $notaFiscal = $builder->paraEmpresa()->comItem()->constroi(); 
+
+    -a partir deste ponto, o objeto foi criado, mas e a relação com
+    os outros objetos?
+
+    A classe construtora da nota fiscal é generalizada e transformada
+    em uma classe abstrata, ela ja possui os principais passos para 
+    criar a nota, podendo ter classes filhas para sobrescrever os passsos
+    ou entao fazer uma especialização de construçao de uma nota fiscal
+
+    Nesse contexto foi feito uma especializaçao de uma classe, onde a 
+    classe construtora dependendo do tipo de nota possui uma certa logica
+    de imposto aplicada.  
+
+    *se usado com ItemOrcamento.
+    precisa fazer a instancia e definir o valor
+    de cada item para fazer o calculo de imposto
+
+    Existe o 'elemento' 'diretor' onde ele pode manipular o builder
+    adicionando,removendo, ou interferindo diretamente os passos do 
+    builder.
+
+cap-5 - prototype
+
+    prototype tem como objetivo gerar uma copia de um elemento mas com 
+    a intenção de mudar apenas alguns detalhes do objeto, sem ter que 
+    perder muito tempo construindo de novo o objeto. (se aplicando a objetos
+    muito complexos ou grandes).
+
+    Uma classe vai possuir um metodo de 'clonar' onde ele recebe uma instancia
+    desse objeto e retorna outra instancia de outro objeto.
+
+    *PHP JA TEM NATIVAMENTE A FUNCAO **CLONE
+    *METODO MAGICO __CLONE
+
+    Clone pega exatas referencias, diferente da primeira implementação
+    onde é feita apenas uma 'copia' gerando um NOVO objeto.
+
+cap-6 - singleton
+
+    Cenario: criando uma unica instancia de conexao ao banco, para haver uma e somente
+    uma conexao para o sistema inteiro, sendo acessando por meio de uma interface
+
+    singleton controle o numero de instancias de um objeto, limitando e gerenciando elas 
+
+    impede de instanciar uma classe com 'new' privando o construtor.
+
+    public static function getConnection(string $dsn, string $username = null, string $password = null, array $options = null): PDO
+    {
+        // se esta instancia vazia, vou criar uma instancia da propria classe (por conta do new static())
+        if(is_null(self::$instance)) self::$instance = new static($dsn, $username, $password, $options);
+        return self::$instance;
+    }    
+
+    Este padrao não é comum ou necessario para o PHP, por conta de sua natureza, o ciclo de vida do php
+    duram apenas uma requisiçoes HTTP ou seja é incomum ter de economizar recursos a este nivel.
+
+    O construtor privado tambem impede a herança desta classe, e tambem nos testes;

@@ -1,0 +1,132 @@
+Iterator é um padrao comportamentao que permite percorrer elementos
+de uma coleçao sem expor suas representações internas (lista, stack, arvore)
+
+Problematica
+
+    coleçao é um dos tipos de dado mais usados, mas ela é apenas um container
+    para um grupo de objetos.
+
+    a maioria das coleçaoes armazena seus elementos em uma lista simples, 
+    ela apenas fornece alguma maneira de acessar o elemento para que outro codigo
+    possa acessar este elemento. Deve haver uma maneira de percorrer cada elemento
+    de uma coleção sem necessariamente acessar o mesmo elemento.
+
+    Mas como percorrer uma estrutura de dados em arvore?
+
+    Poderia ser implementado varias formas de iterar sobre uma classe em 
+    arvore, mas isso seria desncessario e poluitiva a classe.
+
+    O cliente deve trabalhar com varias coleçoes que nao devem se importar 
+    com a forma a qual elas armazenam os seus elementos. Entretanto desde que
+    todas as coleçoes fornecem diferentes formas de acessar seus elementos.
+    Em alguns casos nao ha opção a nao ser associar uma classe a uma coleçao.
+
+Solução
+
+    A ideia principal do iterador é extrair o comportamento de percorrer uma de uma
+    coleçao em um objeto separado chamado 'iterator'
+
+    (coleçao) -> TreeCollction 
+              -> Depth-first Iterator
+              -> Breadth-first Iterator
+    -iterator implementa varios algoritmos de percorrimento
+    -varios objetos iterator pode percorrer a mesma coleçao ao mesmo tempo.
+
+    Um objeto iterator encapsula todas os detalhes de percorrimento, como a posicao
+    atual e quantos elementos ainda faltam até o final, por conta disso varios iterators
+    podem agir sobre a mesma coleçao ao mesmo tempo.
+
+    Normalmente iterators fornecem um metodo primario para pegar elementos de uma coleçao
+    o cliente pode executar este metodo ate nao retornar onde significa que o iterator
+
+    todo iterator deve implementar a mesma interface, fazendo com o que o codigo seja 
+    compativel com qualquer tipo de coleçao ou qualquer algorimo de percorrimento desde que 
+    haja um iterador.
+
+    Se precisar de uma maneira de percorrer uma classe especifica, basta criar uma nova classe
+    iterator sem precisar mudar a coleção original 
+
+Real World Analogy
+
+    Voce é um turista e planeja visitar pontos turisticos, ha varias opçoes para fazer isto
+    uma delas é usar um guia por aplicativo, outra é contratar um guia local
+    Dentre outras opções, essas opções são iterações sobre pontos turisticos e atrações
+    em Roma.
+
+Estrutura
+
+    cliente 5 (possui relacao com as duas interfaces 1 e 3)
+
+    1. 
+    <<interface>>
+    Iterator
+    +getNext()
+    +hasMote():bool
+
+    declara a operação necessaria para percorrer uma coleçao, pegando o proximo
+    elemento, retornando a posicao atual, reiniciando a iteraçao, etc...
+
+    2. 
+    ConcreteIterator
+    -collection:ConcreteColletion
+    -iterationState
+    +concreteIterator(c:concreteIterator)
+    +getNext()
+    +hasMore():bool
+
+    implementa um algorimo especifico para percorrer uma coleçao, o objeto
+    que itera deveria rastrear o progresso de percorrimento sozinho, isso permite
+    varias iteraçoes para o 'percorrer' a mesma coleção independente de uma a outra.
+
+    3.
+    <<interface>>
+    IterableCollection
+    +createIterator():iterator
+
+    declare um ou multiplos metodos para pegar os iteradores compativeis com a coleçao
+    note que o tipo de retorno do metodo deve ser declarado como uma interface iterator
+    entao a colecao concreta retorna varios tipos de iteradores
+
+    4.
+    ConcreteColletion
+    +createIterator():iterator
+
+    Retorna novas instancias de uma classe iteradora concreta cada vez que o cliente 
+    pedir por uma, o resto do codigo deve ficar na mesma classe, mas sao omitidos apenas.
+
+    5. 
+    O cliente pode trabalhar com ambas coleçaoes e iteradores via as duas interfaces, dessa forma
+    o cliente nao é acoplado a classe concreta, permitindo usar varias coleçoes e iteradores com 
+    o mesmo codigo do cliente.
+
+Aplicabilidade
+
+    Usar quando uma coleção possui uma estrutura de dados complexa e voce deseja
+    esconder essa complexidade, seja por razoes de conveniencia ou segurança
+    *iterador encapsula os detalhe da classe e fornece metodos para acessar os elementos
+    se aproximando muito do cliente, ele tambem protege 
+
+    reduzir duplicação de codigos de percorrimento no codigo.
+    *movendo e unificando a logica de iteraçao na qual pode ser muito grande.
+
+    iterar sobre diferentes tipos de estrutura de datas e quando essas estruturas
+    sao desconhecidas
+    *padrao fornece uma interface comum para coleção e iterador,
+
+Implementação
+
+    1. declarar interface do iterador.
+        com metodos para proximo e anterior da coleçao
+        posicao atual e se chegou ao fim.
+    2. declarar interface da coleçao.
+        metodo para buscar iterador, com retorno igual a interface do iterador
+    3. implementar classes concretas de iterador.
+        classe concreta para iterador para ser percorrida, cada objeto iterador
+        deve estar vinculado a uma instancia de coleção por meio do construtor do 
+        iterador.
+    4. implementar interface da coleçao na classe de coleção.
+        faz com o que o cliente crie facilmente iteradores personalizados
+        para cada classe da coleção.
+    5. codigo do cliente.
+        clietne busca um novo objeto iterador quando for preciso.
+

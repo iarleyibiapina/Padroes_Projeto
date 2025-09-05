@@ -1,0 +1,212 @@
+https://refactoring.guru/
+
+Introdução
+- GOF criou um livro com 23 padroes de desenvolvimento, que podem ser divididos em 3 categorias
+    sendo elas: comportamentais, criacionais, struturais.
+
+    Sendo o padrao Comportamental focado em descrever como os objetos devem se comunicar
+    e ter suas responsabilidades.
+
+    projeto inicial e de estudo: Orçamento
+
+cap-1 - Strategy
+
+- *Extra: projeto usa float, para melhor trabalhar com float:
+    usar:
+    extensoes BCMath e Decimal para calculos matematicos
+    $a = '0.1';
+	$b = '0.2';
+	echo bcadd($a, $b);     // prints 0.3
+
+	$a = new Decimal('0.1');
+	$b = new Decimal('0.2');
+	echo $a + $b;           // prints 0.3 
+
+    usar number_format() ou Decimal para arredondar
+        $number = 4.123;
+        echo number_format($number, 2); // prints 4.12
+    If you are using the decimal extension, you can round using the round method:
+        $decimal = new Decimal("4.123");
+        echo $decimal->round(2);        // prints 4.12
+
+- Usando Strategy e removendo um switch que possui um problema de crescimento vertical
+    onde sempre sera necessario mudar seu codigo a cada adição na classe
+    CalculaImposto, o ideal para adicionar uma nova feature é sempre adicionar um codigo 
+    novo e não modificar o antigo.
+
+- Strategy, se um metodo ou classe depender de um parametro é preciso extrair este parametro
+    para uma nova classe, onde na nova alterção passa apenas a classe nova.
+
+    assim se surgir novos parametros basta apenas criar uma nova classe.
+    assim o strategy acaba com o problema de 'ifs' excessivos
+
+- refactoring guru: 
+    Strategy é um padrao de design onde voce define uma familia de algoritmos, separa cada uma
+    delas em uma classe e faz com o que os objetos dela sejam intercambiaveis.
+
+cap-2 - Chain of Responsibility
+
+- agora é criado uma calculadora de descontos, mas esta calculadora possui muitas 
+    regras de negocios que pode ser muito complexa, apenas separar cada tipo de desconto
+    como Strategy faz não vai solucionar o problema de fato.
+
+- Chain of Responsibility: 
+    uma classe para cada tipo de desconto em 'Descontos/'
+
+    assim é feito uma logica onde uma classe Base:
+    se uma regra aplicada, apenas retorna o objeto, se nao ela passa para o proximo
+    objeto ate a regra ser aplicada, podendo crescer facilmente tambem.
+    Objeto (!atendeu a regra) -> Objeto (!atendeu a regra) -> Objeto...
+
+    if(true){
+        retorna valor;
+    } else {
+        retorna new ClasseBase(NovaVerificacao)
+    }
+
+    Cadeia pode ser vista desta forma, caso uma regra nao se aplique, ela chama o proprio
+    objeto que executa uma chamada de outra verificação.
+    cadeia de responsabilidade que desce o nivel até satisfazer uma condição.
+    
+    $var->calcula(new Objeto(new Objeto(new Objeto(new Fim()))))
+    
+    esta é apenas uma forma de implementar este padrão, ha outras formas tambem.
+
+cap-3 - Template Method
+
+- Agora é adicionado dois novos tipos de 'Impostos' que são o Ikcv e Icpp
+    acontece que a estrutura interna dos dois são muito semelhantes mudando apenas
+    poucos pontos. Então essa estrutura pode ser reaproveitada mudando apenas a logica
+    necessaria.
+
+- separar estas logicas em metodos protegidos, pois sao abstratos e tambem nao permitir
+    acesso publico.
+
+- cada classe filha implementa sua logica.
+    podem ser criadas inumeros impostos, seguindo o template de duas aliquotas modificando
+    apenas a verificaçao de checar aliquota e as taxas
+
+- modelo de classe base, onde classes filhas implementa sua logica
+
+cap-4 - State
+
+- nova regra: dependendo do estado do orcamento é feito um desconto diferente.
+
+- state é util para definir certos comportamentos baseado em um estado de uma classe
+    *util apenas quando possui varios estados e grande probabilidade desses estados 
+    aumentarem, se for apenas 2 estados, um IF pode ser o suficiente mesmo.
+
+- adiciona nova funçao de verifica o estado mas surgem outros problemas:
+    -ao definir um estado eu preciso fazer certas verificaçoes, se não é o mesmo estado
+    se esta em aprovação etc.
+    -ficaria muita logica de estado em uma classe, entao isso é extraido para outra clase.
+    - ainda teria o pequeno obstaculo de definir estado usando uma string.
+
+- extraindo uma classe de estado: (cada estado uma classe ou usar ENUM)
+    - cada estado de uma classe possui sua propria regra.
+    - ao inves de chamar a funçao direta, chama a partir do estado atual.
+    - a classe abstrata ja lança uma excessao para todos os casos, aqui a logica é o inverso
+        eu implemento e sobrescrevo um caso que eu quero alterar o estado, o resto deixa normal
+        pois em um estado onde eu tentar atualizar para outro lançara uma excessao.
+    - apos isso na clase orcamento é feito a chamada de todos os metodos de estado onde a propria
+        logica para alterar um estado é feita em cada subclasse e classe Estado pai.
+        evitando uso de ifs.
+    
+    - utilizar exceptions em certos estados pode violar o principio de liskov 
+    - pouco utilizado no PHP mas em especificos casos pode ser util.
+
+cap-5 - Command
+
+- feito uma classe de pedido
+- criar um comando via terminal para gerar um pedido
+- agora via terminal irei
+    php gera-pedido.php 1200 7 "cliente"
+- ou seja eu criei um comando que executa uma certa logica e finaliza. 
+- Por fim esta logica em si, pode ser separada em uma classe e utilizzada
+    de outra forma.
+- *codigo possui uma logica onde recebe e executa as tarefas no mesmo local
+- o pedido é feito em cli, mas se fosse preciso executar de outra maneira o 
+    codigo teria problemas de duplicidade.
+
+- Separar o comando em uma classe
+- Comando deve ter um metodo para executar
+- Pode ser replicado no terminal ou outras partes
+- Pode ter um gerenciador de comandos, onde ha uma fila para executar cada
+    comando.
+    *extrair os dados do comando, com a execuçao dele.
+
+- Command é um padrao onde recebe parametros e executa uma ação sem necessitar
+    saber de onde ela veio.
+- Com o passar do tempo e evoluçao da programação web, esse padrao foi um pouco 
+    modificado.
+
+    O command handler, onde eu preparo o meu comando e crio uma classe para executar
+    os meus comandos. (Divide em duas)
+
+    onde eu preparo primeiro o command com seus argumentos
+    e depois um command handler com as dependencias
+
+    este 'meio' tambem pode ser chamado de 'use cases', 'application service'.
+
+- caso de uso pode ter varias açoes, essas açoes pode ser extraida em uma classe
+    onde esta açao de extrai é chamada de command.
+    command - GoF
+    command handler - DDD
+
+cap-6 - Observer
+
+- Ação são feitas e algumas delas podem ou precisam executar outras tarefas quando 
+    elas forem 'ativadas', uma classe precisa agir quando outra tambem agir.
+
+    *quero fazer o log, enviar email e criar pedido apos a açao de...
+
+    usando o padrao junto com o command ao gerar pedido, criando classes de acoes
+    e utilizando na nova GerarPedidoHandlerObs
+
+    Nesse novo handler, ao executar uma ação é feita outras tres açoes.
+    Vou agora armazenar os comandos para serem executados (definir uma interface para eles)
+
+    sera definido um novo handler onde ele ira executar cada commando armazenado
+    
+- Observer, executa uma ação apos uma ação, alteração de estado ou evento de uma
+    outra classe.  
+
+- Outro exemplo: é uma subscrição de algo  
+
+- Observer.: 
+    Core do PHP ja implementou uma interface para este padrão.
+    implementar SplObject e SplSubject
+        e seus metodos 'attach', 'detach' e 'update'
+
+- Normalmente implementada de forma 'manual' e bem personalizada
+    ao inves do php.
+
+
+cap-7 - Iterator
+
+    O php possui algumas classes nativas para iterator:
+        https://www.php.net/manual/pt_BR/class.iterator.php
+        https://www.php.net/manual/pt_BR/spl.iterators.php
+    
+    o primeiro link possui a documentação para implementar o iterator
+    o segundo link possui alguns metodos para o iterator
+
+    
+- Criado um comando de uma lista de orcamentos, (lista de objetos) essa lista recebe objetos 
+    do tipo Orcamento, mas se tiver um item a mais em string "", ele quebra.
+    Sendo assim é preciso criar uma classe que recebe apenas objetos do tipo Orcamento, ou 
+    uma coleção de orcamentos
+
+- Criado uma outra classe onde implementa um metodo nativo do php para fazer com o que o objeto
+    seja percorrido, para isto é implementado uma interface Iterator, mas esta interface possui
+    muitos metodos a ser implementado, a ideia é fazer com o que apenas objeto' seja percorrivel
+    com isso existe a 'iteratorAggregator' onde é preciso definir um getIterator
+
+    é preciso definir o tipo de iterador deste metodo, os tipos estao na documentaçao
+    mas eu defini que ele vai ser um iterador de arrays, logo apos implementar é possivel
+    fazer um foreach direto no objeto. por que ele é um array de Orcamentos.
+
+- Logo a ideia do padrao é fazer com o que os elementos que normalmente nao seriam percorriveis
+    se tornem de fato percorrivel, sem o cliente se preocupar com a sua implementação
+
+    com o uso da interface \Iterator.

@@ -1,0 +1,140 @@
+controlando um estado de um audio player dependendo do seu estado.
+
+// The AudioPlayer class acts as a context. It also maintains a
+// reference to an instance of one of the state classes that
+// represents the current state of the audio player.
+class AudioPlayer is
+    field state: State
+    field UI, volume, playlist, currentSong
+
+    constructor AudioPlayer() is
+        this.state = new ReadyState(this)
+
+        // Context delegates handling user input to a state
+        // object. Naturally, the outcome depends on what state
+        // is currently active, since each state can handle the
+        // input differently.
+        UI = new UserInterface()
+        UI.lockButton.onClick(this.clickLock)
+        UI.playButton.onClick(this.clickPlay)
+        UI.nextButton.onClick(this.clickNext)
+        UI.prevButton.onClick(this.clickPrevious)
+        
+// The AudioPlayer class acts as a context. It also maintains a
+// reference to an instance of one of the state classes that
+// represents the current state of the audio player.
+class AudioPlayer is
+    field state: State
+    field UI, volume, playlist, currentSong
+
+    constructor AudioPlayer() is
+        this.state = new ReadyState(this)
+
+        // Context delegates handling user input to a state
+        // object. Naturally, the outcome depends on what state
+        // is currently active, since each state can handle the
+        // input differently.
+        UI = new UserInterface()
+        UI.lockButton.onClick(this.clickLock)
+        UI.playButton.onClick(this.clickPlay)
+        UI.nextButton.onClick(this.clickNext)
+        UI.prevButton.onClick(this.clickPrevious)
+
+  // A state may call some service methods on the context.
+    method startPlayback() is
+        // ...
+    method stopPlayback() is
+        // ...
+    method nextSong() is
+        // ...
+    method previousSong() is
+        // ...
+    method fastForward(time) is
+        // ...
+    method rewind(time) is
+        // ...
+
+
+// The base state class declares methods that all concrete
+// states should implement and also provides a backreference to
+// the context object associated with the state. States can use
+// the backreference to transition the context to another state.
+abstract class State is
+    protected field player: AudioPlayer
+
+    // Context passes itself through the state constructor. This
+    // may help a state fetch some useful context data if it's
+    // needed.
+    constructor State(player) is
+        this.player = player
+
+    abstract method clickLock()
+    abstract method clickPlay()
+    abstract method clickNext()
+    abstract method clickPrevious()
+
+  // A state may call some service methods on the context.
+    method startPlayback() is
+        // ...
+    method stopPlayback() is
+        // ...
+    method nextSong() is
+        // ...
+    method previousSong() is
+        // ...
+    method fastForward(time) is
+        // ...
+    method rewind(time) is
+        // ...
+
+
+// The base state class declares methods that all concrete
+// states should implement and also provides a backreference to
+// the context object associated with the state. States can use
+// the backreference to transition the context to another state.
+abstract class State is
+    protected field player: AudioPlayer
+
+    // Context passes itself through the state constructor. This
+    // may help a state fetch some useful context data if it's
+    // needed.
+    constructor State(player) is
+        this.player = player
+
+    abstract method clickLock()
+    abstract method clickPlay()
+    abstract method clickNext()
+    abstract method clickPrevious()
+
+  // A state may call some service methods on the context.
+    method startPlayback() is
+        // ...
+    method stopPlayback() is
+        // ...
+    method nextSong() is
+        // ...
+    method previousSong() is
+        // ...
+    method fastForward(time) is
+        // ...
+    method rewind(time) is
+        // ...
+
+
+// The base state class declares methods that all concrete
+// states should implement and also provides a backreference to
+// the context object associated with the state. States can use
+// the backreference to transition the context to another state.
+abstract class State is
+    protected field player: AudioPlayer
+
+    // Context passes itself through the state constructor. This
+    // may help a state fetch some useful context data if it's
+    // needed.
+    constructor State(player) is
+        this.player = player
+
+    abstract method clickLock()
+    abstract method clickPlay()
+    abstract method clickNext()
+    abstract method clickPrevious()

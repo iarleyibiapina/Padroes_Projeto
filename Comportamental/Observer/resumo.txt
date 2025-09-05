@@ -1,0 +1,128 @@
+https://refactoring.guru/design-patterns/observer
+
+Observer é um apadrao comportamental que permite fazer um mecanismo de inscriçao
+para notificar multiplos objetos sobre qualquer evento que acontence para os objetos
+que estao observando.
+
+Problematica
+
+-Dois elementos: cliente e loja, um cliente possui interesse em um produto novo
+    que esta prestes a lançar.
+
+    O cliente entao viaja varias vezes para verificar a disponibilidade da loja.
+    A loja poderia enviar um email para todos seus clientes a cada produto que chega
+    mas isto seria um problema pois seria enviado muitos emails e dentre estes emails
+    clientes que nao possuem interesse seriam notificados.
+
+    OU o cliente que possui interesse gasta tempo checando cada dia se o produto esta 
+    disponivel ou a loja perde recursos enviando desnecessariamente varios emails.
+
+Soluçao
+
+-O objeto que possui algum estado interessante é chamado de 'Subject', mas ele tambem
+    pode notificar outros objetos sobre as alterações do seu estado é chamado de 'Publisher'
+    Todos os outros objetos que monitora a mudança do 'Publisher' é chamado de 'Subscribers'
+
+- O padrao sugere que é adicionado uma subscription para a classe publisher, sendo assim
+    objetos individuais fazerm a subscription ou unsubscript de um conjunto de eventos vindo 
+    de um publisher. 
+        Consiste em:
+        1) Array armazenado a lista de referencia a objetos 'Subscribers'
+        2) Varios metodos publicos que faz a adição ou remoçao de 'Subscribers' a esta lista
+
+
+Subscriber --add/remove-->  Publisher
+                            -subscriber[]
+                            +addSubscriber(subscriber)
+                            +removeSubscriber(subscriber)
+
+- agora qualquer evento vai disparar uma notificaçao para os Subscribers
+
+- subscriber devem implementar a mesma interface para garantir a notificaçao entre publishers
+    e Subscribers, quem tambem podem ser implementaçoes de outros observers de outros codigos.
+
+...Subscriber (varias classes)
+    +update()
+
+Publisher (executa metodo comum dos subscribers)
++notifySubscribers() 
+
+-* Se quiser fazer uma interface tambem nos 'publishers' para garantir o padrao entre todos 
+    os subscribers e publishers.
+
+Real-Wolrd analogy 
+
+- Um jornal, pessoa se inscreve em um jornal, e a toda noticia postada o jornal é enviado
+    para quem assinou. O jornal possui uma lista de assinantes e notifica todos eles.
+
+Estrutura
+
+    1.
+    Publisher
+    -subscribers:Subscriber[]
+    -mainState
+    +subscribe(s:Subscriber)
+    +unsubscribe(s:Subscriber)
+    +notifySubscribers()
+    +mainBusinessLogic()
+
+    Classe Publisher emite eventos para outros objetos, eventos ao mudar de estado ou executar
+    algum comportamento, publisher contem uma infraestrutura que permite a entrada e saida de inscritos
+
+    2
+    foreach(s in subscribers) s.update(this) // notifica a classe
+
+    quando um novo evento ocorre, o publisher vai em de cada subscription na lista e chama 
+    o metodo notification declarado por meio da interface em cada objeto
+
+    3
+    <<interface>>
+    Subscriber
+    +update(context)
+
+    A interface subscriber declara a notificação, na maioria dos casos consiste em um unico
+    metodo de 'update' o metodo pode ter varios metodos que permite que o Publisher passe alguns
+    detalhes do evento com o metodo 'update'.
+
+    4
+    Concrete Subscribers
+    +update(context)
+
+    executa algumas ações em resposta as notificaçoes emitidas pelo publicador, todas estas 
+    classes devem implementar a mesma interface.
+
+    5
+    normalmente subscribers precisam de alguma informaçao contextual para pegar o 'update' corretamente
+    por esta razao os 'publishers' passam algum dado de contexto como argumento para o metodo de notificaçao
+    o publisher pode passar a si mesmo como argumento permitindo que o subscribe pegue qualquer
+    dado necessario diretamente.
+
+    6 cliente cria publicados e subscribe separado e entao registra os subscribers ao publicador quando ele 'updates'
+
+Aplicabilidade
+
+    -util quando, se preciso mudar um estado de um objeto ele precisa da alteraçao de outros,
+        e o conjunto desses objetos é desconhecido ou muda dinamicamente
+    -alguns objetos devem observar outros, mas apenas por um tempo limitado ou casos especificos.
+
+Implementação
+    - interface do Subscriber - deve conter um metodo 'update()' que sera chamado pelo
+    publisher quando ocorrer um evento.
+    - interface do publicador - define metodos para adicionar ou remover um subscribe
+        publicador apenas interage com subscribe via interface do subscribe
+    - Implementação da lista de subscriber - implementada em uma classe abstrada da 
+        interface do publisher
+    - classes concretas de publicador - toda mudança do publisher ele notifica os subscriber
+    - Implementação dos metodos de update() - classe concreta subscriber imeplementa o 
+        'update()' para reagir aos eventos
+        recebem contextos especificos via argumentos do update() ou acessar o publisher diretamente
+    - Composicao versus herança - usar composicao ou logica de assinatura encapsulada em
+        uma classe abstrata de publisher
+    - Cliente - cria instancias de subscriberse registra nos publishers
+        
+
+Pros e contras
+
+-pro: principio do aberto/fechado, introduzir um novo inscrito sem mudar o codigo
+    establiziar relacao entre objetos em tempo de execuçao
+-contras: notificaçoes dos subscribers ocorrem em uma ordem aleatorioa

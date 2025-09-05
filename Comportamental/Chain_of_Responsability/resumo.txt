@@ -1,0 +1,130 @@
+https://refactoring.guru/design-patterns/chain-of-responsibility
+
+Corrente de responsabilidade é um padrao comportamentao onde um elemento é transportado
+por meio de uma corrente de possiveis 'manipuladores' até que algum deles pegue este 
+elemento e trate. Cada manipulador pode decidir processar o elemento ou passar para
+o proximo manipulador;
+
+[x]->[]->[]->[]->[]->[]->[]
+
+Problematica
+    supondo um sistema de segurança com niveis de acesso.
+    dependendo do cargo do funcionario e seu departamento ele possui um certo nivel de
+    acesso.
+    porem essas verificações é feita de forma sequencial e se uma falhar não há por que
+    continuar o resto das verificações
+    if()
+     if() -> se parar aqui, deve parar as verificações ou prosseguir no acesso
+      if()
+       if()...
+
+    ao passar do tempo, varias outras checagens foram adicionadas, entre elas:
+    - sanitizar o dado
+    - checar tentativa de força bruta
+    - verificar se cache adequado.
+
+    porem a classe infla cada vez mais a cada checagem, sem contar no fato de uma nova
+    checagem poder interferir em outras. 
+    A duplicação de codigo vai existir pelo fato de uma checagem depender de outra mas 
+    nao de todas as checagens.
+    o codigo fica dificil de compreender e caro de manter.
+
+Solução
+
+    Chain Of Responsibility, foca em transformar comportamentos particulares em objetos
+    isolados chamados de 'handlers', nessa Problematica cada checagem deve ser extraida 
+    na sua propria classe com um unico metodo que executa de fato a checagem. O acesso é 
+    passado atraves destes objetos como argumento.
+
+    O padrao então faz com o que estes handlers sejam interligados como se fossem uma corrente
+    e cada handler ligado possui um campo onde armazena a referencia para o proximo handler
+    na cadeia. Cada hadler pode processar o request ou entao passar adiante até que todos
+    os handlers tenham pego o request.
+
+    O handler tambem pode decidir nao passar o request adiante e interromper o processamento
+    da cadeia.
+
+    [request] -> [handler] -> [handler] -> [handler] -> [passou]
+                   parar        parar        parar
+
+    *Outra forma de funcionamento.
+    Se handler puder processar, ele processa e para a corrente.
+
+    Exemplo, o usuario clia em um botao, onde um evento propaga atraves de uma corrente
+    de GUI, que avança por meio de containers e finaliza em uma janela principal.
+    Esta corrente forma tambem uma arvore de objetos.
+
+    -classes handlers devem implementar a mesma interface
+    -cada handler concreto deve focar apenas em ter e executar um metodo
+
+
+Structure 
+
+<<interface>>
+Handler
++setNext(h:Handler)
++handle(request)
+
+BaseHandler
+- next:Handler
++ setNext(h:Handler)
++ handle(request)
+
+ConcreteHandlers
+...
++ handle(request)
+
+h1 = new HandlerA();
+h2 = new HandlerB();
+h3 = new HandlerC();
+//
+h1.setNext(h2);
+h2.setNext(h3);
+h1.handle(request);
+// in base handler
+if(next != null) next.handle(request)
+// in concrete handle
+if(canHandle(request)){
+    //..
+} else {
+    parent::handle(request)
+}
+
+Handler declara uma interface comum para todos os handlers concretos, nomralmente contem um unico metodo para pegar
+os pedidos, mas as vezes pode ter outros metodos para setar o proximo handler na cadeia.
+
+BaseHandler é uma classe opcional onde voce pode colocar um codigo paradao para todas as classes handler;
+    esta classe define um atributo para armazenar uma referencia para o proximo handler, o cliente pode construir
+    uma corrente passando o handler no construtor ou pelo setter por meio do handler anterior. A classe tambem pode 
+    implementar um comportamento padrao do handle: ela pode passa a execução para o proximo se ele existir;
+
+ConcreteHandler contem o codigo que processa os request, uma vez recebido cada handler decide se processa e finaliza
+    ou se processa e passa para o proximo handler atraves da cadeia.
+
+Client deve compor a cadeia uma vez, ou dinamicamente dependendo da logica. 
+*o request pode ser passado em qualquer posicao da cadeia, nao necessariamente no começo dela.
+
+Aplicabilidade
+
+usar quando o programa pode executar diferentes tipos de requests de varias formas,
+    mas os tipos de request e suas sequencias sao desconhecidas
+
+    *o padrao faz com o que o request passe por cada handle e da uma chance para cada
+    um processar se necessario.
+
+usar quando for essencial executar varios handler em uma ordem.
+    *o request pode começar no inicio ou em qualquer etapa da cadeia
+
+usar quando os handlers e ordem puder mudar em tempo de execução.
+    *fornecer uma funçao setter para manipular handlers de maneira dinamica.
+
+Pros e contras
+-pro:
+    controle da ordem de classes handler
+    respeito ao principio da responsabilidade unica, desacoplando classes que invocam
+    operaçoes de classes que performam operaçoes
+    repeito ao principio do aberto/fechado onde introduzir novos handlers é necessario
+    apenas adicionar uma nova classe sem interfirir no codigo antigo.
+-contra
+    alguns request podem acabar nao sendo tratado.
+

@@ -1,0 +1,67 @@
+https://refactoring.guru/design-patterns/adapter
+
+Adapter é um padrão estrutural que permite a colaboraçao entre objetos de interfaces 
+diferentes.
+
+Problematica:
+
+    Sistema A, trabalha e usa XML
+    Sistema B, trabalha e usa JSON
+
+    O sistema A precisa enviar dados para o sistema B, mas o sistema B so reconhece JSON
+    o mesmo acontece caso B precise lidar com A.
+
+
+Solução:
+    Com adapter o sistema A consegue enviar dados para o B convertendo o XML para um 
+    tipo JSON.
+
+    A(XML) -> Adapter(XML->JSON) -> B(JSON)
+
+Real-World Analogy
+
+    Cada regiao do mundo possui seu modelo de tomada, uma pessoa ao viajar ela pode levar
+    um adaptador para transformar a interface do seu equipamento para qualquer tomada do mundo.
+
+Estrutura
+
+    O adaptador pega a interface de um objeto e complementa com o segundo.
+
+    1. Cliente
+        -classe contendo alguns regras de negocio, se comunica com o adapter interface
+
+    2. <<interface>>
+        ClientInterface
+        +method(data)
+
+        -descreve o protocolo que a outra classe deve seguir para integrar com o cliente
+
+    3. Service
+        +serviceMethod(specialData)
+
+        -classe terceira, com a interface diferentes
+    
+    4. Adapter
+        -adaptee:Service
+        +method(data)
+
+        -vai usar tanto a cliente quanto a service, implementando uma interface do objeto 
+        principal enquanto integra o terceiro.
+
+    5.
+        specialData = convertToServiceFormat(data)
+        return adaptee.serviceMethod(specialData)
+        
+        Cliente nao possui acesso direto a um adaptador concreto, apenas a sua interface
+
+    *extra (apenas em linguagens de multiplas interfaces)
+
+    Interface integra e herda a interface do objeto e do serviço sobrescrevendo os metodos
+
+Aplicabilidade
+
+    -Quando for necessario usar uma classe existente, mas interface não é compativel
+    com o resto do codigo.
+    -Quando for reutilizar reutilizar várias subclasses existentes que não possuem 
+    alguma funcionalidade comum que não possa ser adicionada à superclasse.
+    

@@ -1,0 +1,179 @@
+***Coloca em pratica na pasta /PROJETO
+
+Cap-1 - Adapters
+
+-Apos pegar o orcamento, vou fazer o registro do orcamento, por meio de uma "api"
+    como existe varias maneiras de fazer uma requisição, então é criado um 
+    adaptador para consumir uma requisição de acordo com o pacote.
+-adaptar uma logica para uma interface comum do meu programa
+
+-Criei uma interface, que pode ser implementada por Http, curl, guzzle.
+
+-Chamadas de sistemas tambem podem utilizar adapters
+
+-Cria uma interface de um adapter e suas varias implementações
+    tambem auxilia nos testes
+
+Cap-2 - Bridge 
+
+- Surgiu uma nova demanda para exportar em xml e zip, feito entao uma classe para exporta
+    xml.
+
+- SimpleXML, extensao nativa do php. (https://www.php.net/manual/pt_BR/book.simplexml.php)
+
+- ZipArchive, extensao nativa do php. (https://www.php.net/manual/en/class.ziparchive.php)
+
+- Serialize é um metodoo especial do php, que converte para uma string 
+    de dificil leitura mas facil entendimento para o programa.
+    (https://www.php.net/manual/function.serialize.php)
+
+- Ao executar o codigo do zip ele salva o arquivo no diretorio temporario do sistema operacional
+    agora eu tenho meios de exporar em xml e zip.
+    mas se for preciso adicionar outros meio. 
+    se for preciso exportar apenas alguns meios especificos ou todos
+    desta forma a classe crescera exponencialmente
+
+- Para solucionar, este meio não será mais necessario.
+
+- Crio uma interface comun, crio duas classes exportadoras com uma
+    referencia ao objeto a ser usado.b
+    (Bridge utiliza a abstracao e implementação de classes)
+
+    fiz a abstracao do Produto e do Pedido, elementos que podem ser exportado
+    preciso agora da implementação destes elementos.
+
+    abstracao de conteudo exportado
+        refinaçao da abstracao em ConteudoExportado e ProdutoExportado
+    abstracao do formato do conteudo
+    implementação em ArquivoXmlExportado salvando o ConteudoExportado.
+
+    tenho uma abstracao do tipo de conteudo a ser exportado (podendo combinar com varios formatos)
+    tenho uma abstracao do formato do conteudo a ser formatado (podendo combinar com varios conteudos)
+    com isso eu faço uma ligação ou seja uma ponte entre estes elementos.
+
+    na classe Bridge esta bem mais modular agora.
+
+    um arquivoexportado salva um conteudo exportado, que pode ser Xml, Csc, Zip.
+    e este conteudo pode ser um produto, pedido, outro elemento que pode ser
+        exportado pelos meios acima.
+    cada nova implementaçao de um produto a ser exportado é feita de maneira 
+    independente e cada nova maneira de exportar tambem é feita de maneira 
+    independente.
+
+    (produto a ser exportado) --PONTE-> (formas de exportar)
+
+Cap-3 - Decorator
+
+- implementar mais impostos a um objeto, cada imposto é uma classe, mas ai 
+    vem o problema, e se for preciso mais impostos? Como esses impostos iriam
+    se acumular? a maneira mais simples resultaria em muita classe multiplicada.
+    ex.: IcmsComIss, e depois IcmsIccIss e por ai vai...
+
+    a ideia do decorator é basicamente 'cobrir uma classe existente 'somando' 
+    um comportamento ou estado a ela.
+
+Cap-4 - Composite
+
+- Extraio item para uma classe em orcamento, e em orcamento eu terei um array
+    de itens.
+    Cada item tera seu valor e quantidade.
+    Posso pegar o valor acumulado dos itens.
+
+    ideia:
+        $orc = new Orcamento;
+        $item1 = new ItemOrcamento;
+        $orc->add($item1);
+        $orc->finaliza();
+        $orc2 = new Orcamento;
+        $item2 = new ItemOrcamento;
+        $orc2->add($item2);
+        $orc2->add($orc1);
+
+- Porem eu posso ter outros orcamentos dentro de um orçamento, mas desta vez
+    com pedido. Ou entao varios produtos;
+    
+    Mas ai seria muito complicado iterar sobre cada produto ou seu tipo
+    para isto o Composite auxilia, iterando nessa 'arvore' de elementos.
+
+- Preciso unificar orçamento e item, para isso buscar o que ha de comum.
+    nesse caso o valor. (crio uma interface para ele)
+
+    Esta interface define um valor(), onde um item pode ser orçavel ou 
+    este outro orçamento.
+
+    sendo possivel ter um outro orçamento com outros itens dentro de orçamento
+        $orc2->valor();
+            [soma valores de orc1(item1) + item2];
+    o itens podem crescer em formato de arvore 'infinitamente'
+
+Cap-5 - Facade
+
+- Cenario: gerar um log apos desconto, para isto eu uso uma biblioteca de logs
+    mas desta grande biblioteca, com grande variadades de metodos eu pego
+    apenas um metodo ou entao um pequeno conjunto de metodo.
+    alem de precisar seguir uma certa logica de implementação.
+    outro ponto é adicionar outras logicas.
+
+- É possivel criar uma classe com um unico metodo, onde ele possui toda a 
+    logica ou implementação necessaria para um objetivo em especifico.
+    esta unica classe pode usar varias outras classes de um outro sub-sistema.
+
+    na classe CalculaDesconto, o metodo calcula é uma "Faixada" para uma 
+    implementação grande, que pode ter varios logs, varios descontos.
+    e isso tudo é executador por meio de uma chamada de um simples metodo.
+
+    Facade normalmente possui um metodo estatico ou uma classe com um metodo.
+
+Cap-6 - Proxy
+
+- cenario: nova feature, precisa pegar valor do item orcamento. Para pegar 
+    o valor preciso consumir de uma api, mas esse consumir pode custar tempo
+
+    simulando demora com sleep(5). Ideia: armazenar valor em cache e fazer 
+    consulta apenas uma vez economizando tempo e faça apenas uma requisição.
+
+    se cache nao existir, cria um, se exisir, mantem em cache e n faz requi-
+    siçoes desnecessarias.
+
+- Proxy (em redes) - um intermediario que faz o controle de acesso.
+    na programaçao é um intermediario tambem, mas faz alguma regra de negocio
+    antes, ou algum log, cache, configuraçao.
+    -ele intercepta o processo e reduz o uso desnecessario ou gasto de recurso
+    ao fazer uma determinada ação que se repete apenas uma vez;
+
+    serve de copia para acesso do objeto original;
+
+    *caso comum: uso de acesso ao banco de dados.
+
+
+Cap-7 - Flyweight
+
+- Contexto: sistema possui um metodo muito pesado, consumindo muito
+    recurso na memoria.
+- Na classe exemplo de muito consumo, uma simples alteração reduziu
+    3MB, utilizando o mesmo estado, o Flyweight tem como conceito
+    justamente a reutilizaçao de recursos para minimizar gastos.
+
+- Flyweight define que existem: dados intrisicos a um objeto sendo 
+    uma identidade unica daquele objeto.
+    Existem dados extrinsicos, na qual podem ser compartilhado com
+    outros objetos.
+
+- No caso de estudo, a classe pedido
+    possui como intrisico: Orcamento (sendo unico nessa classe)
+    extrinsico: Nome e Data (podendo ser reutilizado)
+
+- Outra parte do padrao Flyweight envolve criar objetos mais otimizados.
+    Utilizando outro padrao Fábrica.
+
+*Preciso transformar os dados em imutaveis.
+    tornando variavel privada
+    iniciando via construtor
+    tendo metodos apenas de get
+
+- Extracao de dados que nao possuem relaçao logo, a logica em manter
+    certos dados em uma classe é muito divergente e confusa.
+
+*analisar bem o uso deste padrao de projeto.
+*no contexto do php, este padrao não possui muito sentido
+    pois o php nao armazena varios objetos.

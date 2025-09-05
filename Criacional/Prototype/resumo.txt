@@ -1,0 +1,85 @@
+https://refactoring.guru/design-patterns/prototype
+
+Prototipo é um padrao criacional que permite voce copiar um objeto existente sem fazer
+o codigo depender de suas classes.
+
+Padrão que permite clonar objetos, ate os mais complexos sem acoplamento de suas dependencias
+
+Problematica
+
+    Se necessario criar uma copia de um objeto, como seria? Copiar a classe por completo
+    atributo por atributo? sem falar na visibilidade dos elementos.
+
+    Mesmo que consiga fazer uma copia perfeita, ainda ha suas dependencias e tabem ha casos
+    em que se conhece a interface mas nao a classe concreta.
+
+Solução
+
+    prototype delega o processo de clonagem para a classe real que esta sendo clonado.
+    uma interface comum é criada para todos objetos clones, esta interface permite o clone 
+    do objeto mas sem o acoplamento de dependendias daquele objeto.
+    *nomalmente possui apenas um metodo de clone.
+
+    a implementaçao do metodo clone é muito similar em todas as classes, o metodo cria um
+    objeto da classe atual e carrega todos os valores dos campos da classe antiga a classe
+    nova. é possivel até copiar campos privados
+
+    o objeto que suporta clonagem é chamado de prototype, quando seu objeto possui dezenas
+    de campos e milhares de possibilidades de variaçoes, clonar pode servir como alternativa
+    a sub-classe. (prototipos pre-construidos)
+
+    -criar um conjunto de objeto
+    -configurar de varias maneiras
+    -quando for preciso de um objeto configurado
+    -basta clonar o prototipo ao inves de construir um objeto do zero.
+
+Estrutura
+
+    1. <<interface>>
+        Prototype
+        +clone(): Prototype
+
+        .declara um metodo unico clone()
+
+    2. ConcretePrototype
+        -field1
+        +concretePrototype(Prototype)
+        +clone(): Prototype
+
+        this.field1 = prototype.field1;
+        return new ConcretePrototype(this);
+
+       SubclassPrototype
+        -field2
+        +subclassPrototype(Prototype)
+        +clone(): Prototype
+
+        super(prototype)
+        this.field2 = prototype.field2;
+        return new SubclassPrototype(this);
+
+        .implementa o metodo clone, copia os dados originais para o clone, tambem deve pegar
+        elementos como objetos linkados, desemaranhamento recursivo, dependencias, etc.
+
+    3. client
+        copy = existing.clone()
+
+        é possivel criar uma copia de qualquer objeto que implementa a interface prototipo.
+    
+Aplicabilidade
+
+    -quando o codigo copiado nao deveria depender de classes concretas.
+    *bem comum quando objetos de libs sao passados por meio de uma interface, a dependencias
+        daquela classe são desconhecidas e nao deveria existir dependencia delas.
+
+    padrao fornece uam interface global para clonagem, tornando o codigo independente de 
+    classes concretas que o objeto clona.
+
+    -quando necessario reduzir o numero de subclasses onde a unica diferença é o meio em que
+    as classes sao inciadas.
+    *caso comum, quando uma classe possui uma configuralçao trabalhosa e no projeto há varios
+    destes codigos.
+    *prototipo usa varios objetos pre-construidos, onde se preciso de uma certa configuralçao
+    basta clonar um prototipo especifico.
+
+

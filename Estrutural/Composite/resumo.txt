@@ -1,0 +1,60 @@
+https://refactoring.guru/design-patterns/composite
+
+Composite permite composer objetos em uma estruturea em arvore e entao trabalhar com esta
+estrutura como se eles fossem objetos individuais.
+
+*composite permite interagir sobre uma arvore de objetos de maneira hierarquica
+
+Problematica 
+
+    Faz mais sentido apenas quando o nucleo do app representa uma arvore;
+    Ex: empacotamento, uma caixa pode ter varios produtos e caixas, e dentro destas caixas
+        podem ter varios outros produtos e outras caixas menores ainda e assim em diante...
+
+        se esse empacotamento fosse produtos a vendas, como seria determinado o valor total?
+
+    Poderia ir em cada produto, desempacotar e ver o valor de cada um. Mas seria um loop
+    imenso e caro alem de nao saber quantos produtos e caixas existem.
+
+Soluçao
+
+    Composite permite rodar um comportamento recursivamente em todos os componentes da arvores.
+    Por meio de uma interface comum na qual declara um metodo para calcular o preço total.
+
+    Nao ha necessidade de se importar com classes concretas que compoem a arvore.
+    Nao ha necessidade de saber se ha produtos simples ou caixas sofisticadas
+    Produto e caixa são semelhantes e o metodo executa até o final da arvore
+
+Strutura
+
+    1. <<interface>>
+        Component
+        +execute()
+
+        -descreve operaços que sao comuns para um elemento simples e complexo
+
+    2. Leaf
+        +execute()
+
+        -elemento basico da arvore, nao possui sub-elementos.
+
+    3. Composite
+        -children: Component[]
+        +add(c:Component)
+        +remove(c:Component)
+        +getChildren(): Component[]
+        +execute()
+
+        -elemento que possui sub-elementos, folhas ou outros Containers, 
+        -nao conhece as classes concretas dos seus filhos
+        -acessa sub-elemento apenas via interface
+        -recebe pedido, delega para sub-elemento, pega resultado e retorna ao cliente.
+
+    4. Client
+    
+
+Aplicabilidade
+
+    -Quando houver objetos com uma estrutura parecida de uma arvore
+    -Quando for preciso tratar elemetos simples e complexos de maneira uniforme
+    

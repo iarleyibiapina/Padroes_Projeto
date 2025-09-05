@@ -1,0 +1,144 @@
+https://refactoring.guru/design-patterns/command
+
+Command é um padrao comportamentao que transforma uma request em um 
+objeto autonomo que contem toda a informação sobre a request.
+esta transformaçao deixa voce passar um request como um argumento 
+de metodo, delay, jogue para fila de uma execução de pedido.
+
+Problematica
+
+    Estou criando uma interface e uma barra, criei um botao e uma classe
+    generica onde todos meus botoes derivam dela. 
+
+    Todos botoes parecem similar, mas fazem coisas diferentes, mas onde
+    ficaraia o codigo para manipular os 'cliques' de cada botao? a soluçao
+    mais simples é criar toneladas de subclasses aplicando cada logica ao 
+    ser clicado o botao. (claramente uma soluçao problematica)
+
+    Varias classes implementaria o mesmo codigo, fora que a medida que passa
+    poderia surgir atalhos, outras features etc.
+
+Solução
+
+    Um bom projeto de software se baseia no principio de separaão de preocupação
+    ou seja divisão de camadas, a camada mais comum de interface grafica e outra
+    camada para a logica comercial. A camada de Interface delega todo o trabalho
+    pesado para a logica de negocios.
+
+    Em codigo pode paracer algo assim: objetos da camada GUI nao deveriam enviar
+    pedidos diretamente, ao inves disso deveriam extrair todo os detalhes dos pedidos
+    de como o objeto é chamado, o nome do metodo, lista de argumentos em uma classe
+    de comando separada com um unico metodo que 'ativa' este request.
+
+    Objetos comandos servem de links entre varias GUI e objetos de regras de negocios
+    a GUI nao sabe como a regra de negocio vai receber o pedido nem como ela vai 
+    processar, objego GUI apenas 'ativa' o comando na qual pega todos os detalhes.
+
+    Interface
+    [botao]
+    [botao] -----> Save Command ---- (dados) --> Regra de negócio
+    [botao]
+    
+    *acessa a camada de regra de negocio via command
+
+    Os comandos entao devem implementar a mesma interface, normalmente ela possui apenas
+    um metodo de execução sem uso de parametros
+
+    Parametros da requisiçao, a GUI deve fornecer eles, metodo de execução nao possui parametros
+    entao como eles sao passado? O comando deve ser pre configurado com estes dados ou obter de
+    alguma forma.
+
+    Apos aplicar este padrao, as subclasses nao serao mais necessarias, apenas colocar um atributo
+    no botao referenciado em dado momento um comando que vai executar o que o clique daquele botao
+    ira fazer.
+
+    Menus, atalhos ou dialogs inteiros podem ser implementados da mesma forma.
+    Comandos se tornam uma camada intermediaria que reduz o acoplamento entre GUI e regra de negocio
+
+Real World Analogy
+
+Cliente faz um pedido -> 
+garçom armazena os dados, gera a comanda 
+e leva para a cozinha fazendo uma fila de comandas -> 
+cozinheiro faz uma açao com base na comanda
+
+Strutura
+
+    1. Invoker
+        -Command:command
+        +setCommand(command)
+        +executeCommand()
+    
+    2. <<interface>>
+        +execute()
+    
+    3. ConcreteCommand2  | ConcreteCommand1
+        +execute()          -receiver
+                            -params
+                            +Command1(receiver, params)
+                            +execute()
+
+    4. Receiver
+        ...
+        +operation(a,b,c)
+    
+    5   Client
+
+1.Classe sender, tambem conhecida como invoker é responsavel por iniciar o request
+    esta classe deve conter um atributo do tipo command, o 'enviador' envia o comando
+    ao inves de enviar o request diretamente pelo receptor,o sender nao é responsavel
+    por criar o comando, normalmente ele é pre-criado pelo cliente via construtor.
+
+2.A interface command normalmente declara um unico metodo para executar o comando
+
+3.Comandos Concretos implementa varios tipos de requisicoes, o comando concreto nao deveria
+    executar o trabalho por si so, deve passar para uma classe de regra de negocio.
+    parametros sao necessarios para executar um metodo, ao receber um objeto é possivel declarar
+    campos no comando concreto ou via construtor.
+
+4. O 'receptor' contem algumas regras de negocios, quaser qualquer objeto pode agir como um 
+    receptor, maioria dos comandos apenas pegam detralhes de comom um request é passado para 
+    o receptor, enquanto o receptor, ele mesmo faz o trabalho.
+
+5. O cliente cria e configura um objeto concreto do tipo command, deve passar todos os parametros
+    da request, incluindo instancias para o construtor do comando, depois disso o resultado 
+    do comando pode ser associado com um ou multiplos 'senders'
+
+Aplicabilidade
+
+    -usar command quando for preciso parametrizar objetos com operações
+    -usar comandos para filas, agendamentos de execuçao e execuçao remota
+        *comandos podem ser serializados e salvos em um banco de dados, depois
+        pode ser usado para enviar comandos ou executar posteriormente
+    -quando for implementar operações reversiveis.
+    *açoes de desfazer, onde é possivel salvar estados (se privado o memento pode auxiliar)
+
+Implementacao   
+
+    extrair um comando em uma interface com um metodo unico
+
+    extrair 'requests' em objetos concretos do tipo comando que implementa esta interface
+    cada classe deve ter campos para armaeznas os argumentos e uma referencia para o objeto recepttor
+    estes argumentos devem ser iniciados no construtor.
+
+    classe identificadores irao agir como receptores, adicione campos para armazenar comandos nestas 
+    classes, senders devem comunicar com seus comandos apenas via interface comando. Senders normalmente
+    nao criam objetos comandos por conta propria mas conseguem por  meio do cliente
+
+    mudar o sender para executar o comando ao inves de enviar uma request para o receptor diretamente
+
+    cliente deve inicializar o objeto seguindo esta ordem:
+        criar receptores
+        criar comandos e associar com os receptores se necessario
+        criar senders e associar com os comandos especificos.
+
+Pros e contras
+
+pro:
+-respeito ao principio da responsabilidade unica, com metodo unico para execucao
+-principio do aberto/fechado, implementando novos comandos
+-implementação de: fazer/desfazer
+-unir um conjunto de comandos em um comando complexo unico
+
+contra
+-codigo pode ficar muito complicado, introduzindo uma camanda entre 'sender' e 'receiver'

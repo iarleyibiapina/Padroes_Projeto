@@ -1,0 +1,69 @@
+https://refactoring.guru/design-patterns/abstract-factory
+
+padrao que permite construir familias de objetos relacionados sem conhecer ou especificar
+suas classes concretas.
+
+Problematica
+
+    Em uma loja de moveis possui os seguintes produtos
+    cadeira, sofa, mesa de jantar
+    E variaçoes como 
+    moderno, antigo, atual
+
+    com isso é possivel fazer 3x3 variaçoes de um movel. mas eles podem tambem estar 
+    relacionados, um conjunto de cadeira, sofa e mesa podem estar na variação atual.
+    mas surge um problema, na criação de objetos como garantir que estes tres Itens
+    pertencem a mesma variação?
+
+    para isso a abstract factory tenta resolver
+
+Soluçao
+
+    abstract factory sugere uma interface 'global' para todas as familias. com isso
+    já é possivel criar classes de variaçoes de um objeto.
+
+    depois é criado uma interface para listar todos os metodos para todos os produto
+    que fazem parte de uma familia. os metodos retornam um produto abstrato.
+
+    Cliente pouco sabe da implementação, apenas conhece a interface dos moveis e o que
+    cada familia possui de interface tambem.
+
+Estrutura 
+
+    1 abstractProductA, abstractProductB
+        interfaces para produtos diferentes mas relacionados, de uma familia
+
+    2 ConcreteProductA1,A2... ConcreteProductB1,B2...
+        implementações abstratas dos produtos, agrupada por variantes, cada produto
+        abstrato deve ser implementado em todas variantes
+    
+    3 <<interface>> 
+        AbstractFactory
+        +createProductA(): ProductA
+        +createProductB(): ProductB
+
+        declara um conjunto de metodo para criar cada produto abstrato
+        
+    4 ConcretFactory1, ConcreteFactory2
+        implementa criação de metodos de uma fabrica abstrata, cada factory concreta 
+        corresponde a uma variante especifica de produtos e cria somente aqueles produtos
+        variantes.
+    
+    5 Client
+        -factory: AbstractFactory
+        +client(f:AbstractFactory)
+        +someOperation()
+
+        Embora factorys concretaas instancia produtos concretos, a assinatura dos metodos 
+        de criaçao deve retornar o produto abstrato correspondente. é possivel trabalhar 
+        com qualquer fabrica/produto variante concreto assim como se comunicar com seus 
+        objetos relacionados via interface abstratas.
+
+Aplicabilidade 
+
+    -Quando precisar trabalhar com varias familias relacionadas de produtos, mas sem depender
+        das classes concretas destes produtos.
+        *toda a interface para criar um produto de uma familia ja é definida, entao todo produto
+        novo de uma familia nao deveria ter problemas em ser implementado
+        -Quando uma Factory Method possui tanto metodo que acaba ofuscando sua responsabilidade
+        principal.

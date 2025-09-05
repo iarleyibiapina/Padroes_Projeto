@@ -1,0 +1,58 @@
+https://refactoring.guru/design-patterns/facade
+
+Padrao que fornece uma simples interface para uma biblioteca, um framework ou qualquer
+outro conjunto complexo de classes.
+
+Podem ser dividida em outra Facade para separar mais ainda a complexidade.
+
+Problematica
+
+    Meu codigo usa uma biblioteca externa muito complexa, onde precisa de outras dependencias
+    ou uma logica para executar certos metodos. 
+    Sendo assim o codigo se torna muito dependente da biblioteca e muito dificil de ler e entender
+
+Soluçao
+
+    Facade é uma classe simples que fornece uma interface para um subsistema coomplexo, na qual
+    contem varias moveis. Uma facade pode ser bastante limitada em suas funcionalidades
+    porem ela possui apenas os metodos principais.
+    -Facade é util quando for implementar apenas alguns metodos de uma lib grande.
+
+Real-World Analogy
+
+    cliente -> atendente -> (enorme quantidade de serviço)
+
+    Quando voce vai ligar para um certo departamento um atendente pode facilmente 
+    orientar e informar dados, sendo que ele pode fornercer varios outros serviços.
+
+Estrutura
+
+    1. Facade
+        -linkToSubsystemObjects
+        -optionalAdditionalFacade
+        +subsystemOperation()
+
+        - fornece um acesso para uma funcionalidade de um subsistema em especial, sabe onde
+        direcionar o pedido e como operar todas as partes moveis
+
+    2. AdditionalFacade
+        +anotherOperation()
+
+        - cirada para pervinir a poluiçao de uma unica facade com features nao relacionadas
+        que podem trazer outra estrutura complexa, pode ser usada pelo cliente ou outra facade.
+    
+    3. (various subsystem class)
+        - consiste em dezenas de objetos, é preciso se aprofundar em detalhes de implementação
+        e como operar todas as funcionalidades.
+
+    4. client
+
+        - usa a facade ao inves de acessar o subsistema diretamente.
+
+Aplicabilidade
+
+    -Quando precisar de uma limitada interface para um subsistema complexo
+    *Facade tambem oferece atalhos, utilizando as features mais utilizadas
+    -Quando precisar estruturar um subsistema em camadas
+    *Permitindo acoplamento de multiplos subsistemas onde se comunicam
+    apenas atraves das interfaces da FACADE.

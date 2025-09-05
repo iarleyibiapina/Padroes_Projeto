@@ -1,0 +1,89 @@
+https://refactoring.guru/design-patterns/decorator
+
+Padrao que permite atribuir novos comportamentos ao objetos
+colocando estes objetos dentro de um objeto encapsulado especial
+que contem os comportamentos novos.
+
+Permite adicionar novos comportamentos a objetos dinamicamente colocando eles
+dentro de um wrappers object especial, chamado de Decorator
+
+Problematica
+
+    -Em uma biblioteca, para notificar os clientes existia apenas uma classe notificadora
+    que possuia alguns campose um construtor com um metodo send() unico, o metodo pode 
+    aceitar uma mensagem como argumento de um cliente e enviar a mensagem.
+
+    Mais tarde foi solicitadoo para adicionar mais tipos de notificaçoes como SMS, envio 
+    para o Facebook e Slack para o lado corporativo.
+
+    Mas e se for preciso usar todas as notificaçoes? (ou uma certa combinaçao de notificaçao?)
+
+Soluçao
+
+    Herdar uma classe pode ser a primeira coisa a se pensar, porem ha alguns pontos a se
+    observar.
+
+    -Herança é estatica, os comportamentos nao podem ser alterados em tempo de execuçao,
+        o objeto inteiro é recolocado com alguns metodo diferentes.
+    -Subclasses podem ter apenas uma classe pai.
+
+    -Wrapper é um objeto que pode ser conectado com algum objeto alvo.
+        ele contem os mesmos conjuntos de metodos que o alvo e delega todas solicitaçoes 
+        recebidas.
+        Ele pode alterar o resultado fazendo algo antes ou depois.
+
+    -Wrapper implementa a mesma interface do objeto 'wrapped' por isso ele é visto como 
+    identico, crie uma referencia para wrapper onde é possivel ter varios wrappers adicionando
+    um comportamento a classe.
+
+    No exemplo de notificaçao, todos os outros tipos de notificaçao serao os Decorator.
+
+    seria algo como:
+    Notificador -> BaseDecorator -> SMSDecorator
+
+    a = new Notificador(); // padrao
+    a = new NOVODecorator(a); // faz uma 'copia' da classe com novo comportamento.
+    a.executa(); // executa o novo comportamento agora
+
+    O cliente pode decorar o objeto com quaisquer decoradores personalizados, desde que 
+    sigam a mesma interface que os outros.
+
+Real-World Analogy 
+
+    roupas, é possivel vestir varias roupas e uma complementar a outra mas sem 'mudar' a pessoa
+
+Estrutura
+
+    1. <<interface>>
+        Component
+        +exec();
+
+    2. ConcreteComponent
+        +exec();
+
+        -Classe que esta sendo 'wrapped', define comportamento padrao, que vai ser alterada
+        pelo decorator.
+
+    3. BaseDecorator
+        -wrappee: Component
+        +BaseDecorator(c:Component); // wrapee = c
+        +exec(); // wrapee.exec()
+    
+    4. ConcreteDecorator
+        +exec() // super::exec()
+        +extra() // extra()
+
+    5. Cliente
+        a = new ConcreteComponent();
+        b = new ConcreteDecorator1(a);
+        c = new ConcreteDecorator2(b);
+        c.exec();
+
+Aplicabilidade
+
+    -Quando necessario atribuir comportamentos extras a um objeto em tempo de execução
+    sem quebrar o codigo que usa estes objetos
+    *estruturando a regra de negocios em camadas.
+    -Quando nao for possivel estender um comportamento usando herança
+    *util para usar em metodos ou classes 'finais'
+

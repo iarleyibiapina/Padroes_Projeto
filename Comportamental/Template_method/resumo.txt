@@ -1,0 +1,113 @@
+https://refactoring.guru/design-patterns/template-method
+
+padrao comportamental onde é definido um esquelo de um algoritmo em uma superclasse
+e permite subclasses sobrescrever certos passos do algoritmo sem mudar sua estrutura.
+
+Problematica
+    quero ler um certo documento, mas ele possui diversos formatos(PDF, DOC, CSV)
+    acontece que toda a logica de abrir o arquivo, analisar, salvar dados e fechar 
+    o arquivo é muito semelhante entre os codigos, mas a parte de extrair o dado é 
+    unico de cada tipo de arquivo
+
+    DOC
+        abreArquivo()
+        extraiDadosDoc() // muda logica apenas aqui.
+        analisa()
+        fechaArquivo()
+        salvaDados()
+    PDF
+        abreArquivo()
+        extraiDadosPDF() // muda logica apenas aqui.
+        analisa()
+        fechaArquivo()
+        salvaDados()
+    CSV
+        abreArquivo()
+        extraiDadosCSV() // muda logica apenas aqui.
+        analisa()
+        fechaArquivo()
+        salvaDados()
+
+    gerando muito codigo duplicado.
+
+Solucao
+
+    gerar uma classe abstrata ou interface comum, onde as subclasses implementaria
+    suas logicas especificas
+
+    AbstractLeitor
+     +abreArquivo()
+     +abstract extraiDadosCSV() // metodo abstrato
+     +analisa()
+     +fechaArquivo()
+     +salvaDados()
+
+    DOC extends AbstractLeitor
+    +extraiDados() // implementa propria logica
+    PDF extends AbstractLeitor
+    +extraiDados() // implementa propria logica
+    CSV extends AbstractLeitor
+    +extraiDados() // implementa propria logica
+
+    O método de modelo divide o algoritmo em etapas, permitindo que as subclasses 
+    substituam essas etapas, mas não o método em si.
+    Os metodos da superclasse devem ser abstratos e protegidos
+
+Real-World Analogy
+
+    Construçao de uma casa, onde é deivido em passos e cada passo possui sua propria
+    particularidade, como a cor de uma parede, foramto do telhado, tipo da porta etc.
+
+Estrutura
+
+    AbstractClass
+    +templateMethod() // executa cada passo
+    +step1()
+    +step2()
+    +step3()
+    +abstract step4() // podem ser abstratos ou ter um comportamento padrao
+
+    ConcreteClass1 extends AbstractClass
+    @override
+    +step3()
+    @override
+    +step4() // logica especifica desta classe
+
+    ConcreteClass2 extends AbstractClass
+    @override
+    +step2()
+    @override
+    +step4() // logica especifica desta classe
+
+    subclasses sobrescrevem todos os metodos mas nunca o metodo template method.
+    n.. templates
+
+Aplicabilidade
+    quando é preciso extender um passo especifico do algoritmo mas nao a classe
+    inteira.
+    *estrutura de algoritmo monolitica em uma serie de etapas manuais que podem 
+    ser extendida por subclasses e modificadas sem interfirir na classe principal
+
+    varias classes com algoritmos identicos e poucas diferenças
+    *tambem é possivel unificar as interfaces.
+
+Implementar
+
+    *analisar o codigo e verifciar se é possivel quebrar em etapas, considerar quais
+    etapas sao comuns a todas subclasses e quais sao unicas
+    *criar classe abstratoa e declarar um metodo 'template' e um conjunto de metodos
+    abstratos representando os passos do algoritmo.
+    *descrever a estrutura executando os passos
+    *definir o metodo template como final e evitar sobrescrita
+    *desejavel implementar um comportamento padrao, caso nao haja sobrescrita
+    *é possivel todos os metodos serem abstratos
+
+Pros e Contras
+
+-pro
+    sobrescrita apenas de certas partes de um grande algoritmo
+    unir codigo duplicado em uma superclasse
+-contra
+    pode haver uma limitação pelo esqueto 
+    viola o principio de liskov substitution
+    quanto mais passos mais dificil de dar manuntenção

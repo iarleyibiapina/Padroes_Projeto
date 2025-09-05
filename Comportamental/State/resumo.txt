@@ -1,0 +1,155 @@
+https://refactoring.guru/design-patterns/state
+Estado - padrao comportamental que permite um objeto alterar seu comportamento quando
+    seu estado interno muda. Se um objeto mudou a classe;
+
+Problematica
+    padrao estado, muito proximo do conceito de Estado-finito de maquina.
+
+    a ideia principal é que existe um numero finito de estados que um programa pode ter
+    ou estar. Dependendo do seu estado o programa se comporta de maneira diferente, assim
+    como ele pode alternar seu estado instantaneamente, entretanto essa mudança pode ocorrer
+    ou não dependendo do outro estado, essas regras de mudança chamadas de 'transitions' 
+    tambem sao finitas e pre-determinadas.
+
+    Um 'Documento' pode estar em: 'Rascunho', 'Moderação', 'Publicado', o documento pode 
+    agir dependendo destes estados,
+    Rascunho  - move o documento para Moderação
+    Moderação - faz o documento public mas apenas se usuario for admin ou voltar para Rascunho
+    Publicado - faz mais nada, pode voltar para Rascunho quando tempo expirado ou ir diretamente
+        de Rascunho para publicado se usuario for admin.
+
+    Esses estados normalmente são alterados por um conjunto de if ou switch.
+    algo bem proximo de:
+    class Document is
+    field state: string
+    // ...
+    method publish() is
+        switch (state)
+            "draft":
+                state = "moderation"
+                break
+            "moderation":
+                if (currentUser.role == "admin")
+                    state = "published"
+                break
+            "published":
+                // Do nothing.
+                break
+    // ...
+
+    O maior defeito deste meio é que a medida que estados surgem a forma de implementar eles e 
+    manter um 'relacionamento' ou ciclo de verificaçoes para todos eles, cresce de maneira expo-
+    nencial. Ficando um codigo enorme e dificil de manter. (ENORMES CONDICIONAIS)
+
+Solucao
+
+    criar uma classe isolade de um objeto e extrair todos os estados especificos nesta classe.
+
+    Document
+    -State:state
+    +render()
+    +publish()
+    +chanveState(state)
+
+    <<interface>>
+    State
+    +render()
+    +publish()
+
+    Draft implements State
+    -Document:document
+    +render()
+    +publish()
+
+    //
+    if(user.isAdmin)
+        document.changeState(new Published(document));
+    else
+        document.changeState(new Moderation(document));
+    //
+
+    -o fato de alterar o estado diretamente na classe, faz com o que a logica implementada em cada
+    estado ja faça as verificações necessarias evitando inumeros IFs e switchs, a interface.
+    -para alterar o estado basta inserir uma nova classe de outro estado
+    -os estados devem seguir a interface alem do Documento possuir um objeto deste tipo de interface
+    -para alterar o estado, alteras-se diretamente no documento, o documento chama o metodo algum
+        metodo de dentro do estado e ali faz toda verificaçao necessaria.
+    
+    -Este padrao pode ser parecido com o Strategy, onde é definido um novo comportamento por meio de
+    uma classe, mas a principal diferença é que AQUI o STATE conhece todas as outras classes de ESTADO
+    enquanto o STRATEGY, só conhece a propria classe.
+
+Real World Analogy
+
+    Botoes e switches no celular possuem diferentes comportamentos de acordo com o estado.
+    *botao liga/desliga
+    o mesmo botao pode:
+    -se tela ligada: desliga
+    -se tela desligada: liga
+
+Strutura
+
+    1.Contexto
+    -State:state
+    +context
+    __construct(context:InitialState)
+    +changeState(state)
+    +doThis()
+
+        *atributo Context
+        this.state = state
+        state.setContext(this)
+        *metodo
+        state.doThis() // estado atual faça isso
+
+    2.<<interface>>
+    State
+    +doThis()
+
+    3.ConcreteStates
+    -context
+    +setContext(context:context)
+    +doThis()
+        *alterando estado
+        state = new OtherState()
+        context.changeState(state)
+
+    4.Main/Client
+    initialState = new ConcreteState()
+    context = new Context(initialState)
+    context.doThis()
+
+    1. contexto armazena uma referencia a um estado concreto e delega para todo o trabalho de estado, 
+    o contexto comunica com o objeto estado via interface, o contexto expoe um seter passando um novo
+    objeto estado.
+
+    2. a interface estadodeclara um metodo de estado especifico, esses metodos devem fazer sentido para 
+    todas as classes concretas, para nao haver metodos sem uso.
+
+    3. estados concretos fornecem suas proprimas implementaçoes para certos metodos, para previnir dupli-
+    cação de codigos ou estado semelhantes atraves de multiplos estados, é preciso uma classe abstrata
+    intermediaria para encapsular alguns comportamentos comuns.
+
+    4. tanto context como estado concreto pode setar o proximo estado do contexto e performa a transicao
+    do estado atual recolocando o objeto referenciado em context.
+
+Aplicabilidade
+
+    quando possuir grande quantidadde de comportamento e mudar constantemente
+    *extraindo cada estado em uma classe.
+
+    quando enormes condicionais
+    *condicionais vao para as classes e respectivos metodos.
+
+    muito codigo duplicado de estado e transiçoes semelhantes baseado em condiçao
+    *hierarquia de classe de estado, extrair codigo codigo em classe abstrata
+
+Pros e contras
+
+-pro
+    -principio da responsabilidade unica, organiza estado em classes separadas
+    -principio do aberto/fechado, cada estado novo é preciso apenas uma classe 
+    -simplifica o codigo e elimina condicionais enormes
+-contra
+    -desnecessario em estados minimos e que raramente mudam.
+

@@ -1,0 +1,112 @@
+https://refactoring.guru/design-patterns/factory-method
+
+conhecida tambem como Construtor Virtual
+
+Padrao que fornece uma interface para criar um objeto em uma superclasse
+mas permite subclasses alterar o tipo do objeto que vai ser criado.
+
+Resolve o problema de criar objetos produtos sem especificar suas classes
+concretas.
+
+Define um metodo factory, na qual poderia ser utilizado para criar objetos
+ao invers de usar uma chamada direta ao construtor usando 'new'. subclasses
+podem sobrescrever estes metodos para mudar os objetos que serão criados.
+
+Problematica
+
+    Em um aplicativo, a primeira versao consiste em um transporte
+    por meio de caminhoes, depois de um tempo, é preciso implementar
+    o transporte maritimo.
+
+    *mas adicionar novas classes a um codio ja acoplado com classes existentes
+        é bastante dificil
+    
+    A maioria do codigo esta acoplado a classe caminhao, adicionar o navio
+    pode e precisa afetar a estrutura inteira do codigo e se for preciso 
+    adicionar mais um meio de transporte o problema se repetira.
+
+    Se ainda for implementado estas mudanças, resultara em um codigo
+    totalmente sujo, bagunçado e desconexo.
+
+Solução
+
+    factory sugere que a chamada diretas a chamada de construtor via
+    new deve ser substituida via um metodo factory especial.
+
+    os objetos ainda continuaram a serem criados via 'new' mas sao 
+    chamados via metodo da factory. Objetos retornados via factory
+    são referenciados como produtos.
+
+    Logistics
+    +planDelivey()
+    +createTransport
+
+    RoadLogistics [se relaciona com Logistics]
+    +createTransport()
+    SeaLogistics  [se relaciona com Logistics]
+    +createTransport()
+
+    Desta forma é possivel substituir o metodo factory na subclasse
+    e alterar a classe dos produtos que estao sendo criados pelo metodo
+
+    ha uma limitação onde subclasses podem retornar diferentes tipos
+    de produtos se os produtos tiverem uma classe ou interface de comum
+    a factory deve ter o tipo de retorno declarado na interface
+
+    <<interface>>
+    transporte
+    +deliver()
+
+    Truck extends transporte
+    +deliver()  
+    Ship extends transporte
+    +deliver()
+
+    RoadLogistics factory retorna objetos Truck que possue um metodo deliver()
+    SeaLogistics factory retorna objetos Ship que possue um metodo deliver()
+
+Estrutura
+
+    1. <<interface>>
+        Product
+        +doStuff()
+
+        .interface comum a todos objetos que podem ser produzidos
+        pelo criador e subclasses
+
+    2. ConcreteProductA,B...
+
+        .diferentes implementações da interface produto
+
+    3. Creator implements Product
+        +someOperation()
+        +createProduct: Product
+
+        Product p = createProduct();
+        p.doStuff();
+
+        .declara o metodo factory que retorna um novo objeto produto
+        metodo deve retornar o que a interface impoe
+        metodo factory deve ser abstrato
+        o metodo pai pode retornar algum tipo de produto padrão
+
+        criaçao do produto nao é responsabilidade do criador.
+        criador ja possui alguma regra de negocio relacionada ao produto
+
+    4. ConcreteCreatorA,B...
+        +createProduct(): Product
+
+        return new ConcreteProductA()
+
+        .sobrescreve o metodo factory e retorna um tipo diferente de produto
+
+    Metodo factory nao precisa criar novas instancias todo o tmepo, ele 
+    tambem pode retornar um objeto existente de um cache, pool ou outra fonte.
+
+Aplicabilidade
+
+    -Quando nao tiver conhecimento do tipo exato e das dependencias
+    que um objeto deveria ter.
+    -Quando for preciso fornecer uma forma de extender compoenentes
+    internos de uma biblioteca ou framework.
+    -Quando for economizar recursos do sistema reutilizando objetos

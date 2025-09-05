@@ -1,0 +1,78 @@
+https://refactoring.guru/design-patterns/proxy
+
+Padrao que permite o fornecimento de um substituto ou espaço reservador para um outro 
+objeto, proxy controle o acesso ao objeto original, podendo executar algo antes ou 
+depois da solicitaçao chegar ao original
+
+Um objeto aja como um substituto de um serviço real usado pelo cliente, o proxy 
+recebe a solicitaçao do cliente, faz algum serviço e entao passa para o objeto real.
+(tambem possui a mesma interface do objeto)
+
+Problematica
+
+    Um certo objeto pode consumir grande quantidade de recurso do sistema, ele é necessario
+    somente certas vezes mas não a todo momento.
+
+    Porem isto nao é possivel de primeira, a todo momento o objeto consumiria recursos do sistema
+    uma alternativa seria o lazy load (iniciar objeto somente quando preciso) mas isto Poderia
+    trazer muita duplicação de codigo.
+
+    (x,y,z) -- fazendo varias queries a todo momento ao banco -> (banco)
+
+Soluçao
+
+    Criar um proxy de mesma interface como intermediario, onde a solicitaçao chega ao 
+    proxy, ele executa algoo antes e cria o serviço real e depois joga a solicitaçao 
+    para o codigo real.
+    (*no exemplo do banco, o proxy pode fazer lazy load e diminuir carga no banco)
+
+Real-World Analogy
+
+    cartao de credito é um proxy para uma conta bancaria, na qual ele 'unifica' o dinheiro
+    o usuario pode fazer pagamentos com ele e o vendedor receber o dinheiro facilmente
+    o cartao de credito e o dinheiro possuem a mesma 'interface' que seria '+pagar()'
+
+Estrutura
+
+    1. <<interface>>
+        ServiceInterface
+        +operation()
+
+        -proxy possui mesma interface, podendo ter uma sobrescrita com uma certa logica.
+
+    2. Service
+        +operation()
+
+        -objetoo que vai ser substituido, contem a regra de negocio.
+
+    3. Proxy (possui um atributo que liga ao serviço)
+        -realService: Service
+        +proxy(s:service)
+        +checkAccess()
+        +operation()
+
+        -if(checkAccess()){
+            realService.operation();
+        }
+        -executa algum processo antes como: lazy initialization, logging, access controll
+            caching.
+
+    4. client
+        -pode usar tanto serviço como proxy via mesma interface, tambem pode passar o proxy
+        em qualquer lugar do codigo que espera um objeto do tipo serviço
+
+Aplicabilidade
+
+    -Lazy initialization, onde um serviço que pode gastar muito recurso só é inicado quando
+        necessario.
+    -Controle de acesso, especificar apenas certos usuarios podem usar um serviço.
+    -Execuçao local de um serviço remoto (Exemplo de logs)
+    -Logging requests (Manter um historico de soolicitao de um serviço)
+    -Caching requests, quando necessario cachear resultados dos pedidos do cliente e 
+        gerenciar o ciclo de vida do cache, especialmente se os resultados um pouco grande.
+        (caso muitos requests iguais)
+    -Referência inteligente. Isso ocorre quando você precisa ser capaz de descartar um 
+        objeto pesado quando não houver clientes que o utilizem.
+
+        
+    

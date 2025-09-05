@@ -1,0 +1,123 @@
+Diferenças entre:
+
+1. Factory
+
+Termo ambiguo que representa uma função, metodo ou classe que suposta
+mente produz algo. Esse algo normalmente é um objeto, arquivo, registro...
+
+exemplos:
+-metodo ou funcao que cria uma GUI
+-classe que cria usuarios
+-metodo estatico que chama a classe construtora de uma certa forma
+-um dos padrao de design criacional
+
+2. Creation method
+
+Definido no livro 'padroes de refatoramento' como "um metodo que cria
+objetos". 
+
+Apenas uma 'caixa' em torno da chamada do construtor, ajuda a isolar
+das alterações no construtor ou conter alguma logica onde retorna
+objetos existentes em vez de criar novos.
+
+Facilmente confundivel com "facotry method"
+
+exemplo simples:
+class Number {
+    private $value;
+
+    public function __construct($value) {
+        $this->value = $value;
+    }
+
+    public function next() {
+        return new Number ($this->value + 1);
+    }
+}
+
+3. static creation method
+
+É um metodo de criação estatico. basicamente.
+por ser estatico nao é extendido logo, não pe uma static factory method
+quando retorna um novo objeto ele se torna um construtor alternativo
+
+*util em linguagens que suportam multiplos construtores
+*se preciso reusar objetos existentes ao inves de criar, este metodo 
+é uma alternativa evitando criar um novo objeto.
+com este metodo é possivel decididir se retorna um objeto novo
+ou se reutiliza
+
+exemplo:
+class User {
+    private $id, $name, $email, $phone;
+
+    public function __construct($id, $name, $email, $phone) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->email = $email;
+        $this->phone = $phone;
+    }
+
+    public static function load($id) {
+        list($id, $name, $email, $phone) = DB::load_data('users', 'id', 'name', 'email', 'phone');
+        $user = new User($id, $name, $email, $phone);
+        return $user;
+    }
+}
+
+4. Simple factory pattern
+
+uma classe com um metodo de criaçao com uma condicianl grande, retorna
+uma instancia de um produto baseada nos parametros passado.
+
+serve de introdução para o factory method ou abstract factory pattern
+
+normalmente representado por um unico metodo em uma unica classe.
+este metodo pode ser tornar grande sendo extraido em subclasses.
+fazendo isso varias vezes acaba tornando uma classic factory method pattern
+
+class UserFactory {
+    public static function create($type) {
+        switch ($type) {
+            case 'user': return new User();
+            case 'customer': return new Customer();
+            case 'admin': return new Admin();
+            default:
+                throw new Exception('Wrong user type passed.');
+        }
+    }
+}
+
+5. Factory method Pattern
+
+fornece uma interface para criaçao de objetos, mas permite subclasses
+alterar o tipo de um objeto que vai ser criado.
+
+abstract class Department {
+    public abstract function createEmployee($id);
+
+    public function fire($id) {
+        $employee = $this->createEmployee($id);
+        $employee->paySalary();
+        $employee->dismiss();
+    }
+}
+
+class ITDepartment extends Department {
+    public function createEmployee($id) {
+        return new Programmer($id);
+    }
+}
+
+class AccountingDepartment extends Department {
+    public function createEmployee($id) {
+        return new Accountant($id);
+    }
+}
+
+6. Abstract Factory Pattern
+
+permite produzir familiar de um objeto relacionado ou dependente sem
+especificar suas classes concretas.
+
+familias de objetos sao classes que podem possuir alguma variaçoes.

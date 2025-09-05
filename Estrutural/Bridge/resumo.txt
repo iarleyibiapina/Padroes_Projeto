@@ -1,0 +1,83 @@
+https://refactoring.guru/design-patterns/bridge
+
+O Bridge é um padrão de design estrutural que permite dividir uma classe 
+grande ou um conjunto de classes estreitamente relacionadas em duas 
+hierarquias separadas - abstração e implementação - que podem ser 
+desenvolvidas independentemente uma da outra.
+
+Divide a regra de negocio ou uma enorme classe em classes separadas hierarquicamente,
+onde podem ser desenvolvidas independentemente uma da outra
+
+Problematica
+
+    Supondo a criaçao de um objeto que possui:
+
+    Formato + Cor
+
+    e entao teria dois formatos (circulo e quadrado)
+    e duas cores (vermelho e azul)
+
+    O mais comum a se pensar seria criar subclasses contendo essas variaçoes:
+    RedCircle, RedSquare, BlueCircle, BlueSquare.
+
+    mas para cada cor ou formato adicionado teria de haver mais e mais subclasses
+    implementado suas variaçoes resultando em um crescimento geometrico.
+
+Soluçao
+
+    O Bridge tenta resolver este problema mudando a herança para a composiçã de
+    objetos, onde uma parte do codigo é extraida para uma classe separada com 
+    sua hierarquia, a classe original faz referencia a um objeto da nova hierarquia
+    ao inves de ter todo um estado e comportamento em uma unica classe.
+
+    formato -(contains)-> cor
+
+    A cor é extraida em sua propria classe com duas subclasses, red e blue. A classe
+    formato possui uma referencia para o objeto de cor, todo trabalho relacionado
+    a cor, sera delegado para o objeto cor relacionado.
+    fazendo uma ponte entre formato e cor (podendo adicionar cores tambem).
+
+Abstração e Implementação
+
+    Gof introduz este conceito como parte da definição de ponte, abstracao (interface)
+    delega trabalho para a camada de implementação (tambem chamada de plataforma)
+
+    *manter um codigo modularizado em pequenas partes é mais facil que um codigo grande e unico
+    acontece que se for surgir diferentes "bifurcações" as classes necessitariam de 
+    varias heranças e interfaces crescendo exponencialmente.
+
+    Ponte sugere que a classe seja divida em duas: Abstração e Implementação.
+
+Strutura
+
+    PONTE (ligando 1 e 2)
+    1. Abstraçao
+    -i:implementation
+    +feat1() [chamando i.method1()]
+    +feat2()
+
+    2. <<interface>> implementação
+    +method1()
+    +method2()
+
+    3. Concrete implementations
+
+    4. Refined abstration (opcional, especifica mais a abstraçao)
+
+    5. Client
+        abstracao.feat1() 
+
+    - interessado no trabalho da abstracao, mas deve conectar o objeto abstrato com
+    um dos objetos implementados.
+
+Aplicabilidade
+
+    -Quando for dividir e organizar uma classe monolitica, que 
+    possui varias variavntes de uma funcionalidade. (ex: conexao
+    com varios bancos de dados)
+    *ponte tenta dividir em subclasses independentes mas que se conectam
+
+    -Quando for preciso extender uma classe com varias dimensoes
+
+    -Se preciso trocar implementação em tempo de execução, podendo substituir
+    o objeto de implementação dentro da abstraçao.

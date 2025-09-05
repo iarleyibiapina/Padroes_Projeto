@@ -1,0 +1,60 @@
+https://refactoring.guru/design-patterns/singleton
+
+Padrão onde uma classe possui uma unica instancia, sendo ela global
+e de livre acesso a todo o projeto.
+
+Apenas um objeto do seu tipo existe e fornece um ponto de acesso
+unificado para qualquer parte do codigo.
+
+Problematica
+
+    Singleton resolve dois problemas, violando o principio da responsabilidade
+    unica.
+
+    1. Garante que uma classe tenha apenas uma instancia, por que controlar
+    o numero de instancia de uma classe? para controlar acesso a recurso
+    compartilhado, como por exemplo o banco de dados.
+
+    Outro exemplo é quando é preciso usar a mesma instancia de uma classe.
+
+    2. Fornecer um ponto de acesso global a instancia, uma variavel global pode
+    ser util em casos de acesso global, mas ela são muito insergura, considerando
+    que pode ser reescrita.
+    
+    O singleton fornece o acesso global porem protege a instancia de uma sobrescrita
+
+Solução
+
+    toda implementação de singleton possui dois passsos em comum.
+    - tornar o construtor privado, para previnir o uso do 'new' em classes
+    singleton.
+    - criar um metodo estatico de criação que age como um construtor, pode debaixo
+    dos panos este metodo chama o construtor privado para criar um objeto e salva
+    em um campo estatico, toda chamada deste metodo retorna um objeto em cache.
+    - todo acesso a classe singleto vai ser via chamada do metodo estatico e toda 
+    chamada a este metodo retorna o objeto.
+
+Estrutura
+
+    1. Singleton
+        -instance: Singleton
+        -Singleton()
+        +getInstance(): Singleton
+    
+        if(instance===null){
+            // usar thread lock aqui se multithread
+            inteance = new Singleton()
+        }
+        return instance
+
+        cliente acessa o getInstance()
+    
+    Construtor deve estar isolado do cliente e o unico meio de acesso deve ser o 
+    getInstance()
+
+Aplicabilidade
+
+    -Quando o programa deve ter uma unica instancia a todos os clientes, como objetos
+    de banco de dados compartilhado em diferentes partes do programa.
+    -Quando precisar restringir um controle sobre todas variaveis globais.
+    

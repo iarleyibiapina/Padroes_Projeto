@@ -1,0 +1,114 @@
+https://refactoring.guru/design-patterns/builder
+
+Builder é um padrao criacional que permite construir um objeto complexo
+passo a passo, o padaro permite produzir diferentes tipos e representação
+de um objeto usando o mesmo codigo de construção.
+
+Problematica
+
+    Cenario: preciso construir um objeto muito complexo, bem elaborado
+    que precisa de uma inicialiação muito grande ou possui muitos campos 
+    entre outros atributos. Tornando tambem uma classe muito grande.
+
+    exemplo basico: construir uma casa, onde precisa do chão, paredes
+    teto, telhado, janelas, etc.
+
+    E se for preciso pequenas alterações? É preciso criar uma subclasse
+    para cada alteração? isso escalaria muito.
+
+    Poderia fazer um construtor enorme podendo manipular os dados necessarios
+    porem isso traria outro problema, o uso excessivo de parametros nulos.
+
+Solução
+
+    O padrao sugere que seja extraido o codigo de construçao para sua propria
+    classe, e mover para objetos separados chamado de 'builders'
+
+    HouseBuilder
+    +buildWalls()
+    +buildDoors()
+    +buildWindows()
+    +buildRoof()
+    +buildGarage()
+    +getResult() // objeto nao sera acessivel até ser construido
+
+    Dividindo a classe construtor em varios passos, para criar um objeto
+    -os passos seguem uma ordem
+    -não é preciso seguir todos os passos
+    -alguns passos precisam de diferentes implementações para construir
+        uma variação de um objeto
+        isso é feito criando varias classes construtoras que implementam
+        o mesmo metodo, mas executam de maneira diferente.
+    -diferentes construtores podem executar a mesma tarefa de varias maneiras
+
+*Diretor
+
+    é possivel abstrair mais e criar uma classe chamada 'Diretor' onde ela
+    vai definir a ordem a qual a construçao de um objeto é feita, sendo 
+    fornecido apenas a implementação dos construtores
+
+    O diretor é opcional, mas pode ser util para reutilização
+    tambem ajuda a esconder a implementação da construção
+
+Estrutura
+
+    1. <<interface>>
+        Builder
+        +reset()
+        +buildStepA()
+        +buildStepB()
+        +buildStepC()
+        ...
+
+        declara os passos de construçao que sao comuns a um builder
+
+    2. ConcreteBuilder1,2...
+        -result:Product
+        +reset()
+        +buildStepA()
+        +buildStepB()
+        +buildStepC()
+        +getResult():Product
+
+        fornece implementações diferentes de construção, produzindo um 'produto'
+
+    3. Product1,2,3... (resultados do builder)
+
+        produtos originados da cosntrução
+
+    4. Diretor
+        -builder:Builder
+        +Director(builder)
+        +changeBuilder(builder)
+        +make(type)
+
+        builder.reset()
+        if(type == 'simple){
+            builder.buildStepA()
+        } else {
+            builder.buildStepB()
+            builder.buildStepC()
+        }
+
+        define a ordem de construcao, 
+        cria ou reusa certas configuraçoes de produto.
+
+    5. Client
+        b = new ConcreteBuilder1()
+        d = new Director(b)
+        d.make()
+        Product p = b.getResult()
+
+    associa um builder a um diretor, normalmente uma unica vez via
+    construtor do diretor, entao o diretor constroi um objeto.
+
+    tambem suporta encademanto de metodos
+    someBuilder->setValueA(1)->setValueB(2)->create()
+
+Aplicabilidade
+
+    -Quando classe possuir um enorme construtor (ou variaçoes dele)
+    -Quando for preciso criar diferentes representações de um mesmo produto
+        *quando possuem apenas alguns metodos especificos
+    -Quando for construir arvores compostas ou outros objetos complexos.
+    

@@ -1,0 +1,73 @@
+https://refactoring.guru/design-patterns/flyweight
+
+Padrao que permite caber mais objetos na memoria RAM compartilhando entre si, partes
+comuns de estados entre multiplos objetos ao inves de manter todos os dados de cada
+objeto.
+
+Programa suporta uma vasta quantidade de objetos mantendo o consumoo de memoria baixo,
+objetos compartilam partes de estado entre si, cacheando dados em diferentes objetos.
+(raro no php)
+
+Problematica
+
+    Um codigo possui uma enorme quantidade de elementos e cada elemento é um objeto 
+    individual que ocupa um certo espaço no recurso do sistema, acontece que em grandes
+    quantidades esses objetos podem acabar por completo a memoria RAM disponivel.
+
+Soluçao
+
+    Analisando o codigo é possivel perceber que alguns destes recursos compartilham do 
+    mesmo dado ou estado. Se estes dados dificilmente mudam, eles sao chamados de estado
+    insitrico, eles podem apenas serem lidos e nao modificados, o resto do estado do objeto
+    fora que é alterado por outros objetos é chamado de estado excentrico.
+
+    flyweight sugere que nao seja necessario armazenar estado excentricos dentro do objeto,
+    ao inves, deve ser passado um estado para um emtodo especifico que aplica isso, apenas
+    estados insitricos permanecem
+
+    -Extrinsinc state storage
+
+    Estados excentricos sao armazenados no objeto container, um array contendo o index dos
+    objetos armazenados.
+    Criar uma classe contexto separado que poderia armazenar o estado excentrico com a re-
+    ferencia para o ojbeto flyweight.
+
+    - Flyweight e imutabilidade
+
+    como flyweight pode ser usado em diversos contextos é preciso assegurar que seu estado
+    nao seja alterado, flyweight deve iniciar um estado apenas uma vez via constructor e 
+    nao deve expor setters ou atributos publicos para outros objetos.
+
+    - Flyweight Factory
+
+    é possivel criar um pool gerenciador de objetos flyweight, o metodo aceita estado insitrico
+    procura por um flyweight com este estado e retorna se foi encontrado, se nao ele cria um 
+    novo e adiciona ao pool.
+
+Estrutura
+
+    1. 2. Flyweight
+            -repeatingState
+            +operation(uniqueState)
+    
+    3. Context
+        -uniqueState
+        -flyweight
+        +context(repeatingState, uniqueState)
+        +operation()
+    4. 
+        this.uniqueState = uniqueState;
+        this.flyweight = factory.getFlyweight(repeatingState);
+        flyweight.operation(uniqueState)
+
+    5. client
+
+    6. 
+        FlyweightFactory
+        -cache: Flyweight[]
+        +getFlyweight(repeatingState)
+
+Aplicabilidade
+
+    -Quando usar um enorme numero de objetos que podem acabar com a RAM
+    *tambem otimiza para dispositivos mais limitados
