@@ -1,0 +1,16 @@
+{
+    "name": "iarley/designpattern",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Iarley\\Designpattern\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "iarley",
+            "email": "7iarley7@gmail.com"
+        }
+    ],
+    "require": {}
+}
